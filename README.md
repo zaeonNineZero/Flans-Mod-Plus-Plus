@@ -1,5 +1,7 @@
 # Flans-Mod-Plus-Plus
-Flan's Mod ++ is a fork of Flan's Mod Plus for 1.7.10, with new features- most of which are easily configurable.
+Flan's Mod ++ (FM++) is a fork of Flan's Mod Plus for 1.7.10, with new features- most of which are easily configurable.
+
+Original created for use in a modpack, the goal of FM++ is to provide an improved user-end experience, with easy-to-use config options to customize your server or modpack's experience.  All new configurable options can be set up in the gun/vehicle/item .txt config files themselves- no need to edit and recompile .java files over and over again just to move an attachment.
 
 
 Feature List
@@ -19,6 +21,7 @@ Many New Features for Guns, Attachments, Ammo, and Grenades:
 * Guns cannot be fired while sprinting by default- add "CanShootWhileSprinting True" to enable sprinting and shooting per gun. 
 * Configurable accuracy changes for firing while aiming vs. not aiming.
 * Added a delay before you can reload a gun by right/left clicking; this can be bypassed by using R to reload, or by adding the ReloadDelay line to a gun file.
+* Added the NamedPaintjob line, which has an additional input for adding names to a gun's paintjob.  Use "ShowPaintjobName True" to enable paintjob names in the item's description, and add DefaultPaintjobName to set the name of the default paintjob. (If DefaultPaintjobName is unset, it will not be shown in the description regardless)
 
 * Guns can be configured to rely on bullets for spread, projectile count, and velocity values.  Useful for making birdshot shells, slug rounds, or a multi-projectile ammo for an energy/plasma weapon.
 * Glass block with a high enough hardness or blast resistant are now invulnerable to being broken by bullets.  Thermal Expansion Reinforce Glass is truly bullet-proof!
@@ -50,6 +53,8 @@ Improved Plane Mechanics.
 
 
 Misc. Changes.
+* New/altered HUD text lines for vehicles and planes, showing throttle, core health, fuel level, and (for planes) heading.
+* Added a HUD text line for VTOL planes showing the current mode.
 * Parts can now have descriptions entered for them.
 
 
