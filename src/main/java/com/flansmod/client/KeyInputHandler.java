@@ -34,8 +34,8 @@ public class KeyInputHandler
 	public static KeyBinding downKey = new KeyBinding("Down key", Keyboard.KEY_LCONTROL, "Flan's Mod");
 	//public static KeyBinding exitKey = new KeyBinding("Exit Key", Keyboard.KEY_LSHIFT, "Flan's Mod");
 	public static KeyBinding inventoryKey = new KeyBinding("Inventory key", Keyboard.KEY_R, "Flan's Mod");
-	public static KeyBinding bombKey = new KeyBinding("Bomb Key", Keyboard.KEY_V, "Flan's Mod");
-	public static KeyBinding gunKey = new KeyBinding("Gun Key", Keyboard.KEY_B, "Flan's Mod");
+	public static KeyBinding bombKey = new KeyBinding("Bomb Key", Keyboard.KEY_B, "Flan's Mod");
+	public static KeyBinding gunKey = new KeyBinding("Gun Key", Keyboard.KEY_V, "Flan's Mod");
 	public static KeyBinding controlSwitchKey = new KeyBinding("Control Switch key", Keyboard.KEY_C, "Flan's Mod");
 	public static KeyBinding reloadKey = new KeyBinding("Reload key", Keyboard.KEY_R, "Flan's Mod");
 	public static KeyBinding gunModeKey = new KeyBinding("Gun Mode key", Keyboard.KEY_F, "Flan's Mod");
