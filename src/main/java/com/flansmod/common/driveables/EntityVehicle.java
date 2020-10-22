@@ -259,7 +259,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			case 3 : //Right : Yaw the wheels right
 			{
 				wheelsYaw += 2F;
-				leftTurnHeld = true;
+				rightTurnHeld = true;
 				return true;
 			}
 			case 4 : //Up : Brake
