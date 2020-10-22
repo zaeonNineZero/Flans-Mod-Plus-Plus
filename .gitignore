@@ -22,5 +22,10 @@ eclipse/*
 Thumbs.db
 .DS_Store
 
+# Misc
+gradlew.bat
+Run Gradlew to Build.lnk
+SourceTree.lnk
+
 # Flan's Mod
 !eclipse/Flan/
