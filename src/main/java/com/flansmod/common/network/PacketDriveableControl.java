@@ -28,6 +28,7 @@ public class PacketDriveableControl extends PacketBase
 	public float prevPropAngle;
 	public float rotorAngle;
 	public float prevRotorAngle;
+	public String mode;
 	public boolean flare;
 	public boolean canFire;
 	public boolean reload;
@@ -62,11 +63,13 @@ public class PacketDriveableControl extends PacketBase
 		{
 			EntityVehicle veh = (EntityVehicle)driveable;
 			steeringYaw = veh.wheelsYaw;
+			mode = "Plane";
 		}
 		else if(driveable instanceof EntityPlane)
 		{
 			EntityPlane plane = (EntityPlane)driveable;
 			steeringYaw = plane.flapsYaw;
+			mode = plane.planeMode;
 		}
 		propAngle = driveable.propAngle;
 		prevPropAngle = driveable.prevPropAngle;
@@ -102,7 +105,13 @@ public class PacketDriveableControl extends PacketBase
     	data.writeFloat(propAngle);
     	data.writeFloat(prevPropAngle); 
     	data.writeFloat(rotorAngle);
-    	data.writeFloat(prevRotorAngle); 
+    	data.writeFloat(prevRotorAngle);
+    	
+    	if (mode == "Heli")
+    		data.writeInt(1); 
+    	else
+    		data.writeInt(0); 
+    	
     	data.writeBoolean(flare);
     	data.writeInt(stage);
     	data.writeInt(stageDelay);
@@ -135,6 +144,12 @@ public class PacketDriveableControl extends PacketBase
 		prevPropAngle = data.readFloat();
 		rotorAngle = data.readFloat();
 		prevRotorAngle = data.readFloat();
+		int ModeInt = data.readInt();
+		if (ModeInt == 1)
+			mode = "Heli";
+		else
+			mode = "Plane";
+		
 		flare = data.readBoolean();
 		stage = data.readInt();
 		stageDelay = data.readInt();
@@ -170,6 +185,11 @@ public class PacketDriveableControl extends PacketBase
 		//plane.setRotorPosition(rotorAngle, prevRotorAngle);
 		driveable.rotorAngle = rotorAngle;
 		driveable.prevRotorAngle = prevRotorAngle;
+		if(driveable instanceof EntityPlane)
+		{
+			EntityPlane plane = (EntityPlane)driveable;
+			plane.planeMode = mode;
+		}
 		driveable.varFlare= flare;
 		if(driveable.getDriveableType().IT1)
 		{

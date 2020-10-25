@@ -1,0 +1,16 @@
+[
+{
+  "modid": "flansmod",
+  "name": "Flan's Mod ++",
+  "description": "Zed's edited fork of Flan's Mod Plus, with several new features.  Adds guns, airplanes, and vehicles into Minecraft",
+  "version": "1.0.1",
+  "mcversion": "1.7.10",
+  "url": "http://www.flansmod.com",
+  "updateUrl": "",
+  "authorList": ["jamioflan","PrototypeTheta","Zed98"],
+  "credits": "All code contributors.  Vehicle fuel usage fix by war-monger.",
+  "logoFile": "flansmod.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]

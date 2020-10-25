@@ -1,0 +1,26 @@
+	FLAN'S MOD ++
+	CHANGELOG
+
+
+[Version 1.0.1]
+* Fixed hover mode emitters firing when in flight mode.
+* Updated HUD for planes/helicopters to add Pitch and Roll lines.
+* Added auto-leveling for aircraft; in flight, roll (and pitch for helicopters) will settle to 0 when nearly level.
+	- This makes levelling roll in-flight and hovering in helicopters/VTOL planes easier.
+
+
+[Version 1.0.0]
+Initial Release.
+
+Flan's Mod ++ Feature Summary:
+------------------------------
+
+* Many new configurable features for guns, including tweakable model kickback, variable accuracy, etc.
+* By default, guns no longer can be aimed nor fired while sprinting.
+* Added bipod mechanics for grip attachments.
+* Improved vehicle mechanics, including drifting, engines that can only take certain fuels, a Cruise Control mode, etc. 
+* Vehicles will now throttle up/down faster, and throttle will naturally decay to simulate friction.
+* Improved plane mechanics, including increased speed when diving, configurable lift ratings, etc.
+* Planes no longer come to a hard, sudden stop when out of fuel, instead uncontrollably throttling down.
+* Tweaks to the HUD when driving vehicles; vehicle fuel and VTOL flight mode are now visible on the HUD.
+* More item types can now have custom descriptions.

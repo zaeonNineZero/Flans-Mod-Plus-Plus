@@ -1359,13 +1359,15 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         }
 		
 		//Particle Emitters - Setup
+		if(!worldObj.isRemote)
+		{
 		String planeMode = "n/a";
-		boolean planeGroupToggle = false;
+		boolean planeGroupToggle = true;
 		if(this instanceof EntityPlane)
 			{
 			planeMode = ((EntityPlane) this).getCurrentFlightMode();
 			
-			if (planeMode == "Plane")
+			if (planeMode.equals("Plane"))
 			{
 			planeGroupToggle = true;
 			}
@@ -1381,20 +1383,30 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         	ParticleEmitter emitter = type.emitters.get(i);
         	emitterTimers[i]--;
         	boolean canEmit = false;
+        	boolean properMode = false;
         	boolean inThrottle = false;
     		DriveablePart part = getDriveableData().parts.get(EnumDriveablePart.getPart(emitter.part));
 			float healthPercentage = (float)part.health / (float)part.maxHealth;
 				
-			if(isPartIntact(EnumDriveablePart.getPart(emitter.part)) && healthPercentage >= emitter.minHealth && healthPercentage <= emitter.maxHealth && ((this instanceof EntityPlane && ((emitter.mode.equals("Plane") && planeGroupToggle) || (emitter.mode.equals("Hover") && !planeGroupToggle))) || emitter.mode.equals("Any") )){
+			if(isPartIntact(EnumDriveablePart.getPart(emitter.part)) && healthPercentage >= emitter.minHealth && healthPercentage <= emitter.maxHealth)
     			canEmit = true;
-    		} else {
-    			canEmit = false;
+			
+			if(this instanceof EntityPlane){
+			if(planeGroupToggle){
+				if (emitter.mode.equals("Plane"))
+    			properMode = true;
     		}
+			else
+			{
+    			if (emitter.mode.equals("Hover"))
+    			properMode = true;
+    		}
+			}
+			else
+			properMode = true;
 			
-			//Double check flight mode
-			if (emitter.mode.equals("Hover") && (planeGroupToggle || planeMode == "Plane"))
-			canEmit = false;
-			
+			//if (this instanceof EntityPlane && !properMode)
+			//continue;
     		
     		if((throttle >= emitter.minThrottle && throttle <= emitter.maxThrottle))
     			inThrottle = true;
@@ -1403,7 +1415,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     		
         	if(emitterTimers[i] <= 0)
         	{
-        		if(inThrottle && canEmit){
+				if(inThrottle && canEmit && properMode){
         		//Emit!
         		Vector3f velocity = new Vector3f(0,0,0);;
         		Vector3f pos = new Vector3f(0,0,0);
@@ -1443,6 +1455,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         		emitterTimers[i] = emitter.emitRate;
         	}
         }
+		}
 
         checkParts();
 

@@ -424,7 +424,8 @@ public class TickHandlerClient
 				//float speed = (float) ((ent.motionX * ent.motionX) + (ent.motionY * ent.motionY) + (ent.motionZ * ent.motionZ));
 				int healthP = (int)((float)ent.getDriveableData().parts.get(EnumDriveablePart.core).health / (float)ent.getDriveableData().parts.get(EnumDriveablePart.core).maxHealth * 100);
 				int fuelP = (int)((float)ent.getDriveableData().fuelInTank / (float)ent.getDriveableType().fuelTankSize * 100);
-				float yaw = Math.round(ent.serverYaw);
+				float rawYaw = (float) ((ent.serverYaw))*10;
+				float yaw = (Math.round(rawYaw));
 				String heading = "Unknown";
 				boolean rfEngine = ent.getDriveableData().engine.useRFPower ? true : false;
 				
@@ -488,13 +489,25 @@ public class TickHandlerClient
 					EntityDriveable entP = (EntityDriveable)ent;
 					//mc.fontRenderer.drawStringWithShadow(String.format("Yaw : %.0f%", ((EntitySeat)mc.thePlayer.ridingEntity).looking.getYaw()), 92, 2, 0xffffff);
 
-					float pitch = Math.round(entP.serverPitch*100)/100;
-					float roll = Math.round(entP.serverRoll*100)/100;
+					float rawPitch = (entP.axes.getPitch())*-10;
+					float rawRoll = (entP.axes.getRoll())*10;
+					
+					float pitch = (Math.round(rawPitch));
+					float roll = (Math.round(rawRoll));
+					
+					String pitchD = (pitch > 0 ? "Up" : "Down");
+					String rollD = (roll > 0 ? "Left" : "Right");
+					
+					if (pitch < 0.1 && pitch > -0.1)
+					pitchD = "Level";
+					if (roll < 0.1 && roll > -0.1)
+					rollD = "Level";
+					
 					String mode = ((EntityPlane) entP).getCurrentFlightMode();
 					
-					mc.fontRenderer.drawStringWithShadow("Heading: " + yaw + " (" + heading + ")", 102, 2, 0xffffff);
-					mc.fontRenderer.drawStringWithShadow("Pitch: " + pitch, 102, 12, 0xffffff);
-					mc.fontRenderer.drawStringWithShadow("Roll: " + roll, 102, 22, 0xffffff);
+					mc.fontRenderer.drawStringWithShadow("Heading: " + (yaw/10) + " (" + heading + ")", 102, 2, 0xffffff);
+					mc.fontRenderer.drawStringWithShadow("Pitch: " + (pitch/10) + " (" + pitchD + ")", 102, 12, 0xffffff);
+					mc.fontRenderer.drawStringWithShadow("Roll: " + (roll/10) + " (" + rollD + ")", 102, 22, 0xffffff);
 
 					if(((EntityPlane) entP).getPlaneType().mode == EnumPlaneMode.VTOL)
 					mc.fontRenderer.drawStringWithShadow((mode == "Plane" ? "Flight Mode" : "Hover Mode"), 2, 37, 0xffffff);

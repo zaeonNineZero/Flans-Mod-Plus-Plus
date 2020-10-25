@@ -1,0 +1,10 @@
+{
+	"vehiclerepair": {
+    "category": "player",
+    "sounds": [ "flansmod:vehiclerepair" ]
+	},
+	"vehicledamage": {
+    "category": "player",
+    "sounds": [ "flansmod:vehicledamage" ]
+	}
+}

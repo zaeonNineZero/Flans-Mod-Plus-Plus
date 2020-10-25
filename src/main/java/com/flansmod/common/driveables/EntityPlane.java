@@ -431,7 +431,6 @@ public class EntityPlane extends EntityDriveable
         	FlansMod.log("Plane type null. Not ticking plane");
         	return;
         }
-        //planeMode = mode;
 
         //Work out if this is the client side and the player is driving
         boolean thePlayerIsDrivingThis = worldObj.isRemote && seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)seats[0].riddenByEntity);
@@ -679,17 +678,18 @@ public class EntityPlane extends EntityDriveable
 		float roll = flapsRoll * (flapsRoll > 0 ? type.rollLeftModifier : type.rollRightModifier) * sensitivityAdjust;
 
 		//Damage modifiers
+		if(!isPartIntact(EnumDriveablePart.tail))
+		{
+			if(type.spinWithoutTail)
+			yaw = 15F;
+			else
+			yaw = 0;
+			
+			pitch = 0;
+		}
+		
 		if(mode == EnumPlaneMode.PLANE)
 		{
-			if(!isPartIntact(EnumDriveablePart.tail))
-			{
-				if(type.spinWithoutTail)
-				yaw = 15F;
-				else
-				yaw = 0;
-			
-				pitch = 0;
-			}
 			if(!isPartIntact(EnumDriveablePart.leftWing))
 			{
 				roll = roll / 2F - (5F * (float) getSpeedXZ());
@@ -701,15 +701,30 @@ public class EntityPlane extends EntityDriveable
 				pitch = pitch / 2F - (1F * (float) getSpeedXZ());
 			}
 		}
+		
+		//Roll leveling, and pitch leveling for helicopters
+		if (axes.getRoll()<=4 && axes.getRoll()>=0)
+			roll += Math.min(0.01,Math.abs(axes.getRoll()));
+		if (axes.getRoll()>=-4 && axes.getRoll()<=0)
+			roll -= Math.min(0.01,Math.abs(axes.getRoll()));
+		
+		if (mode == EnumPlaneMode.HELI && throttle > 0.25)
+		{
+		if (axes.getPitch()<=2.5 && axes.getPitch()>=0)
+			pitch += Math.min(0.01,Math.abs(axes.getPitch()));
+		if (axes.getPitch()>=-2.5 && axes.getPitch()<=-0)
+			pitch -= Math.min(0.01,Math.abs(axes.getPitch()));
+		}
 
+		//Perform axis rotations
 		axes.rotateLocalYaw(yaw);
 		axes.rotateLocalPitch(pitch);
 		axes.rotateLocalRoll(-roll);
 
-		if(worldObj.isRemote && !FlansMod.proxy.mouseControlEnabled())
+		/*if(worldObj.isRemote && !FlansMod.proxy.mouseControlEnabled())
 		{
-			//axes.rotateGlobalRoll(-axes.getRoll() * 0.1F);
-		}
+			axes.rotateGlobalRoll(-axes.getRoll() * 0.1F);
+		}*/
 
 		//Some constants
 		float g = (!onDeck)?0.98F / 10F: 0;
