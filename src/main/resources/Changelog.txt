@@ -6,7 +6,7 @@
 * Fixed hover mode emitters firing when in flight mode.
 * Updated HUD for planes/helicopters to add Pitch and Roll lines.
 * Added auto-leveling for aircraft; in flight, roll (and pitch for helicopters) will settle to 0 when nearly level.
-	- This makes levelling roll in-flight and hovering in helicopters/VTOL planes easier.
+	- This makes leveling roll in-flight and hovering in helicopters/VTOL planes easier.
 
 
 [Version 1.0.0]
