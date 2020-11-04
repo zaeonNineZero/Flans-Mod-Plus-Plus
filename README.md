@@ -4,7 +4,7 @@ Flan's Mod ++ (FM++) is a fork of Flan's Mod Plus for 1.7.10, with new features-
 Original created for use in a modpack, the goal of FM++ is to provide an improved user-end experience, with easy-to-use config options to customize your server or modpack's experience.  All new configurable options can be set up in the gun/vehicle/item .txt config files themselves- no need to edit and recompile .java files over and over again just to move an attachment.
 
 
-1.0.0 Feature List
+Feature List
 ------------
 
 Many New Features for Guns, Attachments, Ammo, and Grenades:
