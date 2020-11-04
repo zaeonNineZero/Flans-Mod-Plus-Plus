@@ -13,9 +13,9 @@ Many New Features for Guns, Attachments, Ammo, and Grenades:
 * Knockback can be configured in both the gun and bullet .txt files.
 
 * Configurable translation and up/down rotation of gun models for aligning the sights of guns; separate values for when a scope is attached and when no scope attachment is present.
-* Configurable translation of attachment models relative to the gun, for making quick adjustments to attachment locations without having to recompile a model.s
+* Configurable translation of attachment models relative to the gun, for making quick adjustments to attachment locations without having to recompile a model.
 
-* Configurable model translate/rotation recoil when shooting, independant of player camera recoil.
+* Configurable model translate/rotation recoil when shooting, independent of player camera recoil.
 * Configurable translation/rotation during pump animations.
 * Configurable rotation of the pump model, for making rotating bolt-action animations.
 * Smooth sprint animations, with multiple presets to pick from.
@@ -24,12 +24,15 @@ Many New Features for Guns, Attachments, Ammo, and Grenades:
 * Added a delay before you can reload a gun by right/left clicking; this can be bypassed by using R to reload, or by adding the ReloadDelay line to a gun file.
 * Added the NamedPaintjob line, which has an additional input for adding names to a gun's paintjob.  Use "ShowPaintjobName True" to enable paintjob names in the item's description, and add DefaultPaintjobName to set the name of the default paintjob. (If DefaultPaintjobName is unset, it will not be shown in the description regardless)
 
-* Guns can be configured to rely on bullets for spread, projectile count, and velocity values.  Useful for making birdshot shells, slug rounds, or a multi-projectile ammo for an energy/plasma weapon.
-* Glass block with a high enough hardness or blast resistant are now invulnerable to being broken by bullets.  Thermal Expansion Reinforce Glass is truly bullet-proof!
-* Mining Lasers! Use "MiningLaserBeam True", then add MiningLaserMaxHardness and MiningLaserMaxResistance to make a bullet behave like a Mining Laser projectile.  If a block is not too hard or blast resistant, it will be mined and dropped by the bullet when hit.
-* Ammo items can now drop other items, such as parts, when emptied in Survival Mode.  You laser weapons can now drop empty batteries that can be refueled!
+* Guns with multiple fire modes will now show their fire mode outside the ammo counter text; this can be forced on for guns with only a single fire mode as well.
+* Added per-gun configuration for whether to sure the default crosshair in certain situations, such as aiming vs. not aiming and scope attached vs. no scope attached.
 
-* Grenades can now have descriptions added to them. Easily let players know that your landmine will prime after 5 seconds!
+* Guns can be configured to rely on bullets for determining spread, projectile count, and velocity values.  Useful for making birdshot shells, slug rounds, or a multi-projectile ammo for an energy/plasma weapon.
+* Glass block with a high enough hardness or blast resistant are now invulnerable to being broken by bullets.  Thermal Expansion's Reinforced Glass is truly bullet-proof!
+* Mining Lasers! Use "MiningLaserBeam True", then add MiningLaserMaxHardness and MiningLaserMaxResistance to make a bullet behave like a Mining Laser projectile.  If a block is not too hard or blast resistant, it will be mined and dropped by the bullet when hit.
+* Ammo items can now properly drop other items, such as parts, when emptied in Survival Mode.  From example, a laser weapon's ammo could drop an empty battery, which can then be recharged.
+
+* Grenades can now have descriptions added to them. Good for letting players know how long a grenade's fuse lasts.
 * Grenade and Bullet models can now be rescaled using ModelScale.
 
 * Bipods: Use "Bipod True" and the BipodEffectivenessMultiplier multiplier to set make a grip function as a Bipod.  Bipods only apply their recoil reduction modifier when sneaking.
@@ -37,10 +40,15 @@ Many New Features for Guns, Attachments, Ammo, and Grenades:
 
 
 New Vehicle Mechanics.
+* When driving ground vehicles, the camera will now lag slightly behind the vehicle's turn rate when steering.
+* The Landing Gear key can be used to reset the camera's yaw in ground/water vehicles.
+* Fixed vehicle hitboxes for more accurate bullet hit detection. (Code by GoldSloth, ported from FMU)
+
 * Vehicles decelerate automatically when W or S aren't being held.
 * Enable Cruise Control using the Mode Switch key to keep your vehicle's throttle steady.
-* Vehicles can drift/slide when turning; vehicles with lower Traction will drift more.
-* Vehicle idle sounds (used when Throttle is near or at 0 while the driver's seat is occupied) can be set to continue looping regardless of throttle level, providiing a background motor sound.
+* Vehicles can drift/slide when turning; vehicles with lower Traction will drift more.  Driving at high throttle levels will result in lower traction and more sliding.
+* Boat Vehicles have improved physics; they stop moving when out of water, and will not change pitch/roll.
+* Vehicle idle sounds (used when Throttle is near or at 0 while the driver's seat is occupied) can be set to continue looping regardless of throttle level, providing a background motor sound.
 * Acceleration/Deceleration rates and Traction can be configured in the vehicle config .txt files.
 
 * Engines can now be configured to only take certain types of fuel.  If the Fuel Type of the fuel item does not match the Fuel Type of the engine, no fuel will be added to the engine.
@@ -48,15 +56,15 @@ New Vehicle Mechanics.
 
 
 Improved Plane Mechanics.
-* Planes fly faster in a dive, and now longer come to a hard stop in mid-air when out of fuel.
+* Planes fly faster in a dive, and no longer come to a hard stop in mid-air when out of fuel.
 * The MaxAirspeed line allows setting a hard-cap for maximum flying speed, both in a dive and when flying at high throttle values.
-* Emitters can be toggled on/off depending on VTOL flight mode. (NOTE: Currently hover emitters are active in flight mode due to a bug)
+* Emitters can be toggled on/off depending on VTOL flight mode.
 
 
 Misc. Changes.
-* New/altered HUD text lines for vehicles and planes, showing throttle, core health, fuel level, and (for planes) heading.
-* Added a HUD text line for VTOL planes showing the current mode.
-* Parts can now have descriptions entered for them.
+* New/altered HUD text lines for vehicles and planes, showing throttle, core health, fuel level, heading, and (for planes) pitch and yaw.
+* Added a HUD text line for VTOL planes showing the current flight mode.
+* Parts can now have items descriptions ingame.
 
 
 

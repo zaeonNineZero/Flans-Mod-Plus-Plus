@@ -156,11 +156,18 @@ public class GunType extends InfoType implements IScope
 	public float sightsXShift = 0;
 	/**Increase to sightsXShift when scoped in*/
 	public float sightsXScopedShift = 0;
+	/**Additional Z Movement when in ADS, with no scope attached*/
+	public float sightsZShiftUnscoped = 0;
+	/**Additional Z Movement when in ADS, with a scope attached*/
+	public float sightsZShiftScoped = 0;
 	/**Z-Offset when the gun is NOT being aimed*/
 	public float hipZShift = 0;
 	
 	public boolean renderCrosshairUnscoped = true;
 	public boolean renderCrosshairScoped = false;
+	public boolean renderCrosshairAiming = false;
+	
+	public boolean alwaysShowFiremode = false;
 	
 	/**Whether the DecreaseRecoil variable is a divider or subtracter.  True is divider, false is subtracter*/
 	public boolean decreaseRecoilDivider = false;
@@ -733,6 +740,10 @@ public class GunType extends InfoType implements IScope
 				sightsXShift = Float.parseFloat(split[1]);
 			else if(split[0].equals("SightsXScopedOffset") || split[0].equals("AimXScopedOffset"))
 				sightsXScopedShift = Float.parseFloat(split[1]);
+			else if(split[0].equals("SightsZShiftUnscoped") || split[0].equals("AimZShiftUnscoped"))
+				sightsZShiftUnscoped = Float.parseFloat(split[1]);
+			else if(split[0].equals("SightsZShiftScoped") || split[0].equals("AimZShiftScoped"))
+				sightsZShiftScoped = Float.parseFloat(split[1]);
 			else if(split[0].equals("HipZShift"))
 				hipZShift = Float.parseFloat(split[1]);
 			
@@ -749,6 +760,10 @@ public class GunType extends InfoType implements IScope
 				renderCrosshairUnscoped = Boolean.parseBoolean(split[1]);
 			else if(split[0].equals("RenderCrosshairWhenScoped"))
 				renderCrosshairScoped = Boolean.parseBoolean(split[1]);
+			else if(split[0].equals("RenderCrosshairWhenAiming"))
+				renderCrosshairAiming = Boolean.parseBoolean(split[1]);
+			else if(split[0].equals("AlwaysShowFiremode"))
+				alwaysShowFiremode = Boolean.parseBoolean(split[1]);
 			else if(split[0].equals("SprintAnimationType"))
 				sprintAnim = EnumSprintHoldType.getSprintHoldType(split[1].toLowerCase());
 			

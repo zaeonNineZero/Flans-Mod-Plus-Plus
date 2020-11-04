@@ -2,6 +2,24 @@
 	CHANGELOG
 
 
+[Version 1.0.2]
+* Separated firemode indicator from the ammo counter- it is now rendered independently.
+* Added controls for whether to show a gun's crosshair in various situations, such as when a scope is attached or when aiming.
+
+* HITBOX FIX: Ported GoldSloth's vehicle part hitbox fix from Flan's Mod Ultimate: Stability Edition.
+* Increased how much vehicles slide/drift while turning at high throttle levels; added config values to control this behavior.
+* Added the ability to use the landing gear key to reset the yaw of the driver's camera in vehicles.
+	- Holding this key locks the camera until the key is released.
+* Boats can no longer be driven when out of water; amphibious vehicles still can be driven both on land and in water.
+* Boats will no longer apply pitch or roll.
+* Added work-in-progress code for Submarines. NOTE: Submarine code is janky and may be subject to change.
+	- "IsSubmarine True" activates Submarine behavior.
+	- Use SurfaceRate, SubmergeRate, and MaxSurfaceLevel to control Sub behavior.
+	- Further improvements and documentation coming in a later update.
+
+* Fixed broken heading readout on the HUD for vehicles and planes.
+
+
 [Version 1.0.1]
 * Fixed hover mode emitters firing when in flight mode.
 * Updated HUD for planes/helicopters to add Pitch and Roll lines.

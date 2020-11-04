@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 
 import com.flansmod.api.IExplodeable;
 import com.flansmod.common.FlansMod;
+import com.flansmod.common.RotatedAxes;
 import com.flansmod.common.driveables.DriveableType.ParticleEmitter;
 import com.flansmod.common.driveables.VehicleType.SmokePoint;
 import com.flansmod.common.guns.EntityBullet;
@@ -72,6 +73,9 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
     public float roll = 0;
     
     public float yawSpeed = 0;
+	
+	/** Submarine floating height */
+	public float subFloatLevel = 0;
     
     //Handling stuff
     public boolean leftTurnHeld = false;
@@ -262,8 +266,10 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				rightTurnHeld = true;
 				return true;
 			}
-			case 4 : //Up : Brake
+			case 4 : //Up : Brake (or ascend if sub)
 			{
+				if (!type.submarine)
+				{
 				throttle *= 0.88F;
 				if(throttle < 0.001F && throttle > -0.001F)
 					throttle = 0F;
@@ -271,10 +277,22 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 					throttle = 0F;
 				if(throttle < -0.001F)
 					throttle = 0F;*/
+				}
+				else
+				{
+					if (subFloatLevel < type.maxSubFloatHeight)
+						subFloatLevel += (type.subSurfacingSpeed)/3;
+					else
+						subFloatLevel = type.maxSubFloatHeight;
+				}
 				return true;
 			}
-			case 5 : //Down : Do nothing
+			case 5 : //Down : Descend if sub
 			{
+				if (type.submarine)
+				{
+					subFloatLevel -= (type.subSubmergingSpeed)/3;
+				}
 				return true;
 			}
 			case 6 : //Exit : Get out
@@ -315,8 +333,9 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			{
 				return true;
 			}
-			case 13 : // Gear : Do nothing
+			case 13 : // Gear : Reset yaw (hold to adjust pitch without moving yaw)
 			{
+				seats[0].playerLooking = new RotatedAxes(0,seats[0].playerLooking.getPitch(),0);
 				return true;
 			}
 			case 14 : // Door
@@ -325,7 +344,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				{
 					varDoor = !varDoor;
 					if(type.hasDoor)
-						player.addChatMessage(new ChatComponentText("Doors " + (varDoor ? "open" : "closed")));
+						player.addChatMessage(new ChatComponentText("Doors " + (varDoor ? "opened" : "closed")));
 					toggleTimer = 10;
 					FlansMod.getPacketHandler().sendToServer(new PacketVehicleControl(this));
 				}
@@ -417,7 +436,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			}*/
       	}
 		
-		//Disable cruise control when the vehicle is disabled
+		//Disable cruise control when the vehicle has no driver
 		if(seats[0] == null || seats[0].riddenByEntity == null && cruiseControl)
 		cruiseControl = false;
 
@@ -481,6 +500,14 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				
 		if(type.tank && !hasBothTracks()) throttle = 0;
 		if(disabled) wheelsYaw = 0;
+		
+		
+		//Boat check - boats have zero throttle out of water.
+		if (type.boat)
+		{
+			if(!worldObj.isAnyLiquid(this.boundingBox))
+				throttle = 0;
+		}
 		
 		
 		//Before we move on, get the vehicle's speed
@@ -611,10 +638,12 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 					//Apply steering
 					if(wheel.ID == 2 || wheel.ID == 3)
 					{
+						float sThrottle = Math.min(adjustThrottle,type.driftSpeed);
+						
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (throttle > 0 ? 1 : -1);
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (motionH*(type.traction) > 0 ? 1 : 0);
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (adjustThrottle-2F+((type.traction+50)/50F) > 0 ? 1 : 0);
-						float velocityScale = (0.01F - Math.max( (0.024F / (type.traction/3 + 2F/3F)) * (Math.min(Math.max(adjustThrottle*2-0.3F,0),1)),0.01F )) * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (adjustThrottle > 0 ? 1 : -1);
+						float velocityScale = (0.01F - Math.max( (0.024F / (type.traction/(3+((sThrottle-adjustThrottle)*type.driftTraction)) + 2F/3F)) * (Math.min(Math.max(sThrottle*2-0.3F,0),1)),0.01F )) * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (adjustThrottle > 0 ? 1 : -1);
 
 						wheel.motionX -= wheel.getSpeedXZ() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
 						wheel.motionZ += wheel.getSpeedXZ() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
@@ -660,13 +689,32 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 	    		allWheelsOnGround = true;
 	    	}
 			}
+			
+			
+			//Before we move on, moderate submarine float heights
+			if (type.submarine)
+			{
+				if (subFloatLevel > ((posY-(posY-subFloatLevel)) + 0.5))
+					subFloatLevel = 0.5F;
+				if (subFloatLevel < ((posY-(posY-subFloatLevel)) - 0.5))
+					subFloatLevel = -0.5F;
+				
+				if (subFloatLevel > type.maxSubFloatHeight)
+					subFloatLevel = type.maxSubFloatHeight;
+			}
+			
+			//Set floating height
+			float floatingHeight = type.floatOffset;
+			if (type.submarine)
+			floatingHeight = subFloatLevel;
+			
 
 			//Now we apply gravity
-			if(allWheelsOnGround && !(type.floatOnWater && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, -type.floatOffset, 0))) && !wheel.onDeck){
+			if(allWheelsOnGround && !(type.floatOnWater && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, -floatingHeight, 0))) && !wheel.onDeck){
 				wheel.moveEntity(0F, (!onDeck)?-0.98F/5:0, 0F);
-			} else if((type.floatOnWater && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, -type.floatOffset, 0))) && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, 1 - type.floatOffset, 0)) && !wheel.onDeck){
+			} else if((type.floatOnWater && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, -floatingHeight, 0))) && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, 1 - floatingHeight, 0)) && !wheel.onDeck){
 				wheel.moveEntity(0F, 1F, 0F);	
-			} else if((type.floatOnWater && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, -type.floatOffset, 0))) && !worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, 1 - type.floatOffset, 0)) || wheel.onDeck){
+			} else if((type.floatOnWater && worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, -floatingHeight, 0))) && !worldObj.isAnyLiquid(wheel.boundingBox.copy().offset(0, 1 - floatingHeight, 0)) || wheel.onDeck){
 				wheel.moveEntity(0F, 0F, 0F);
 			this.roll = 0;
 			this.pitch = 0;
@@ -719,6 +767,12 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			pitch = Lerp(pitch, tpitch, 0.2F);
 			roll = Lerp(roll, troll, 0.2F);
 			
+			if(type.boat || type.submarine)
+			{
+			pitch = 0;
+			roll = 0;
+			}
+			
 			if(type.tank)
 			{
 				float velocityScale = 0.04F * (throttle > 0 ? type.maxThrottle : type.maxNegativeThrottle) * data.engine.engineSpeed;
@@ -748,7 +802,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 
 		//Sounds
 		//Starting sound
-		if ((Math.abs(throttle) > 0.02F && Math.abs(throttle) < 0.25F && hasEnoughFuel() || !hasEnoughFuel() && Math.abs(throttle) > 0.02F) && soundPosition == 0)
+		if ((((Math.abs(throttle) > 0.02F && Math.abs(throttle) < 0.25F && hasEnoughFuel()) || (!hasEnoughFuel() && Math.abs(throttle) > 0.02F))) && soundPosition == 0)
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.startSoundRange, dimension, type.startSound, false);
@@ -763,7 +817,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 		}
 		//Idle/Motor sound
 		if(seats[0] != null){
-		if((throttle <= 0.02F && throttle >= -0.02F || type.idleSoundAsMotor) && seats[0].riddenByEntity != null && idlePosition == 0 && hasEnoughFuel())
+		if((throttle <= 0.02F && throttle >= -0.02F || type.idleSoundAsMotor) && seats[0].riddenByEntity != null && idlePosition == 0 && hasEnoughFuel() && !disabled)
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.engineSoundRange, dimension, type.idleSound, false);	

@@ -99,7 +99,7 @@ public class TickHandlerClient
 		Minecraft mc = Minecraft.getMinecraft();
 
 		//Crosshair removal when the correct conditions are met are met
-		if(event.type == ElementType.CROSSHAIRS && ((FlansModClient.currentScope == null && !FlansModClient.crosshairUnscoped) || (FlansModClient.currentScope != null && !FlansModClient.crosshairScoped)))
+		if(event.type == ElementType.CROSSHAIRS && !FlansModClient.crosshairAiming && ((FlansModClient.currentScope == null && !FlansModClient.crosshairUnscoped) || (FlansModClient.currentScope != null && !FlansModClient.crosshairScoped)))
 		{
 			event.setCanceled(true);
 			return;
@@ -163,6 +163,12 @@ public class TickHandlerClient
 				{
 					ItemGun gunItem = (ItemGun)stack.getItem();
 					GunType gunType = gunItem.type;
+					
+					if(gunType.submode.length >= 2 || gunType.alwaysShowFiremode){
+						mc.fontRenderer.drawString("[" + gunType.getFireMode(stack) + "]", i / 2 + 32, j - 79, 0x000000);
+						mc.fontRenderer.drawString("[" + gunType.getFireMode(stack) + "]", i / 2 + 33, j - 80, 0xffffff);
+					}
+					
 					int x = 0;
 					for(int n = 0; n < gunType.numAmmoItemsInGun; n++)
 					{
@@ -176,10 +182,7 @@ public class TickHandlerClient
 							GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 							RenderHelper.disableStandardItemLighting();
 							String s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage();
-							if(gunType.submode.length >= 2)
-							{
-								s = s + "[" + gunType.getFireMode(stack) + "]";
-							}
+							
 							if(bulletStack.getMaxDamage() == 1)
 								s = "";
 							mc.fontRenderer.drawString(s, i / 2 + 32 + x, j - 69, 0x000000);
@@ -195,6 +198,12 @@ public class TickHandlerClient
 						if(offHandStack != null && offHandStack.getItem() instanceof ItemGun)
 						{
 							GunType offHandGunType = ((ItemGun)offHandStack.getItem()).type;
+							
+							if(gunType.submode.length >= 2 || gunType.alwaysShowFiremode){
+								mc.fontRenderer.drawString("[" + offHandGunType.getFireMode(stack) + "]", i / 2 - 32, j - 79, 0x000000);
+								mc.fontRenderer.drawString("[" + offHandGunType.getFireMode(stack) + "]", i / 2 - 33, j - 80, 0xffffff);
+							}
+							
 							x = 0;
 							for(int n = 0; n < offHandGunType.numAmmoItemsInGun; n++)
 							{
@@ -203,10 +212,7 @@ public class TickHandlerClient
 								{
 									//Find the string we are displaying next to the ammo item
 									String s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage();
-									if(gunType.submode.length >= 2)
-									{
-										s = s + "[" + gunType.getFireMode(offHandStack) + "]";
-									}
+									
 									if(bulletStack.getMaxDamage() == 1)
 										s = "";
 
@@ -459,21 +465,21 @@ public class TickHandlerClient
 					fuelColour = 0x4a4a4a;
 				}
 				
-				if (yaw <= 22 && yaw >= -22)
+				if (yaw <= 220 && yaw >= -220)
 					heading = "East";
-				if (yaw < 67 && yaw > 22)
+				if (yaw < 670 && yaw > 220)
 					heading = "Southeast";
-				if (yaw <= 112 && yaw >= 67)
+				if (yaw <= 1120 && yaw >= 670)
 					heading = "South";
-				if (yaw < 157 && yaw > 112)
+				if (yaw < 1570 && yaw > 1120)
 					heading = "Southwest";
-				if (yaw <= -157 || yaw >= 157)
+				if (yaw <= -1570 || yaw >= 1570)
 					heading = "West";
-				if (yaw < -112 && yaw > -157)
+				if (yaw < -1120 && yaw > -1570)
 					heading = "Northwest";
-				if (yaw <= -67 && yaw >= -112)
+				if (yaw <= -670 && yaw >= -1120)
 					heading = "North";
-				if (yaw < -22 && yaw > -67)
+				if (yaw < -220 && yaw > -670)
 					heading = "Northeast";
 				
 				
@@ -498,9 +504,9 @@ public class TickHandlerClient
 					String pitchD = (pitch > 0 ? "Up" : "Down");
 					String rollD = (roll > 0 ? "Left" : "Right");
 					
-					if (pitch < 0.1 && pitch > -0.1)
+					if (pitch < 1 && pitch > -1)
 					pitchD = "Level";
-					if (roll < 0.1 && roll > -0.1)
+					if (roll < 1 && roll > -1)
 					rollD = "Level";
 					
 					String mode = ((EntityPlane) entP).getCurrentFlightMode();

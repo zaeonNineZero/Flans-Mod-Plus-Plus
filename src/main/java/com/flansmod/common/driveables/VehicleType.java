@@ -23,6 +23,10 @@ public class VehicleType extends DriveableType
 	public boolean tank = false;
 	/** The traction modifier of the vehicle.  Higher tractions means less drifting when steering */
 	public float traction = 15F;
+	/** The throttle level at which vehicles begin to loose traction and start drifting when turning */
+	public float driftSpeed = 0.7F;
+	/** The multiplier of how much traction is lost when the throttle is above driftSpeed */
+	public float driftTraction = 1.0F;
 	
 	/** How fast the vehicle throttles up outside Cruise Mode */
 	public float acceleration = 1F;
@@ -85,6 +89,10 @@ public class VehicleType extends DriveableType
             	tank = Boolean.parseBoolean(split[1].toLowerCase());
 			if(split[0].equals("Traction"))
 				traction = Float.parseFloat(split[1]);
+			if(split[0].equals("DriftSpeedThreshold"))
+				driftSpeed = Float.parseFloat(split[1]);
+			if(split[0].equals("DriftTractionLoss"))
+				driftTraction = Float.parseFloat(split[1]);
 
             //Visuals
             if(split[0].equals("HasDoor"))

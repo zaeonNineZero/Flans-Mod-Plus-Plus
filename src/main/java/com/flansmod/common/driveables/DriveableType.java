@@ -142,6 +142,8 @@ public class DriveableType extends InfoType
 	public float drag = 1F;
 
 	//Boat Stuff
+	/** Toggle for special Boat functionality */
+	public boolean boat = false;
 	/** If true, then the vehicles wheels float on water */
 	public boolean floatOnWater = false;
 	/** Defines where you can place this vehicle */
@@ -150,6 +152,15 @@ public class DriveableType extends InfoType
 	public float buoyancy = 0.0165F;
 
 	public float floatOffset = 0;
+	
+	/** Toggle for Submarine mode */
+	public boolean submarine = false;
+	/** How fast the Submarine surfaces */
+	public float subSurfacingSpeed = 1F;
+	/** How fast the Submarine submerges */
+	public float subSubmergingSpeed = 1F;
+	/** Sets a limit to the sub's surface floating height, so it doesn't float on top of the water. */
+	public float maxSubFloatHeight = 0F;
 
 	/** The radius within which to check for bullets */
 	public float bulletDetectionRadius = 5F;
@@ -374,15 +385,31 @@ public class DriveableType extends InfoType
             	floatOnWater = Boolean.parseBoolean(split[1]);
 			else if(split[0].equals("Boat"))
             {
+				boat = true;
             	placeableOnLand = false;
             	placeableOnWater = true;
             	floatOnWater = true;
             	wheelStepHeight = 0F;
             }
+			else if(split[0].equals("Amphibious"))
+            {
+				placeableOnLand = true;
+            	placeableOnWater = true;
+            	floatOnWater = true;
+            }
 			else if(split[0].equals("Buoyancy"))
 				buoyancy = Float.parseFloat(split[1]);
 			else if(split[0].equals("FloatOffset"))
 				floatOffset = Float.parseFloat(split[1]);
+			
+			else if(split[0].equals("Submarine") || split[0].equals("IsSubmarine"))
+				submarine = Boolean.parseBoolean(split[1]);
+			else if(split[0].equals("SurfaceRate"))
+				subSurfacingSpeed = Float.parseFloat(split[1]);
+			else if(split[0].equals("SubmergeRate"))
+				subSubmergingSpeed = Float.parseFloat(split[1]);
+			else if(split[0].equals("MaxSurfaceLevel"))
+				maxSubFloatHeight = Float.parseFloat(split[1]);
 
 			else if(split[0].equals("CanMountEntity"))
 				canMountEntity = Boolean.parseBoolean(split[1]);

@@ -108,24 +108,34 @@ public class DriveablePart
 		//We now have an AABB starting at box(x, y, z) and with dimensions box(w, h, d) and our ray in the same coordinate system
 		//We are looking for a point at which the ray enters the box, so we need only consider faces that the ray can see. Partition the space into 3 areas in each axis
 		
+		/** GoldSloth's fixed part hitbox code, ported from Flan's Mod Ultimate: Stability Edition. */
+		
 		//X - axis and faces x = box.x and x = box.x + box.w
 		if(motion.x != 0F)
 		{
+			// It may seem odd that we're checking before and after the box is within bounds.
+			// but if all axis were in bounds of the box, we'd be inside the box - which we don't care about
+			// (we only care about entry of a box)
+			// So if we're outside the box, and one or two axis is within - one axis will be outside, hence we will catch the intersection there.
 			if(origin.x < box.x) //Check face x = o.x
 			{
+				// How long before the bullet is far along the X axis enough to be within the box bounds
 				float intersectTime = (box.x - origin.x) / motion.x;
+				// Use that time to check if the Y and Z are also in the box at this time.
 				float intersectY = origin.y + motion.y * intersectTime;
 				float intersectZ = origin.z + motion.z * intersectTime;
-				if(intersectY >= box.y && intersectY <= box.y + box.h && intersectZ >= box.z && intersectZ <= box.z + box.d)
+				if(intersectY >= box.y && intersectY <= box.y + box.h && intersectZ >= box.z && intersectZ <= box.z + box.d && intersectTime >= 0) {
 					return new DriveableHit(driveable, type, intersectTime);
+				}
 			}
 			else if(origin.x > box.x + box.w) //Check face x = o.x + d.x
 			{
 				float intersectTime = (box.x + box.w - origin.x) / motion.x;
 				float intersectY = origin.y + motion.y * intersectTime;
 				float intersectZ = origin.z + motion.z * intersectTime;
-				if(intersectY >= box.y && intersectY <= box.y + box.h && intersectZ >= box.z && intersectZ <= box.z + box.d)
+				if(intersectY >= box.y && intersectY <= box.y + box.h && intersectZ >= box.z && intersectZ <= box.z + box.d && intersectTime >= 0) {
 					return new DriveableHit(driveable, type, intersectTime);
+				}
 			}
 		}
 		
@@ -137,16 +147,18 @@ public class DriveablePart
 				float intersectTime = (box.z - origin.z) / motion.z;
 				float intersectX = origin.x + motion.x * intersectTime;
 				float intersectY = origin.y + motion.y * intersectTime;
-				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectY >= box.y && intersectY <= box.y + box.h)
+				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectY >= box.y && intersectY <= box.y + box.h && intersectTime >= 0) {
 					return new DriveableHit(driveable, type, intersectTime);
+				}
 			}
 			else if(origin.z > box.z + box.d) //Check face z = box.z + box.d
 			{
 				float intersectTime = (box.z + box.d - origin.z) / motion.z;
 				float intersectX = origin.x + motion.x * intersectTime;
 				float intersectY = origin.y + motion.y * intersectTime;
-				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectY >= box.y && intersectY <= box.y + box.h)
+				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectY >= box.y && intersectY <= box.y + box.h && intersectTime >= 0) {
 					return new DriveableHit(driveable, type, intersectTime);
+				}
 			}
 		}
 		
@@ -155,19 +167,21 @@ public class DriveablePart
 		{
 			if(origin.y < box.y) //Check face y = o.y
 			{
-				float intersectTime = (box.y - origin.y);
-				float intersectX = origin.x * intersectTime;
-				float intersectZ = origin.z * intersectTime;
-				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectZ >= box.z && intersectZ <= box.z + box.d)
+				float intersectTime = (box.y - origin.y) / motion.y;
+				float intersectX = origin.x + motion.x * intersectTime;
+				float intersectZ = origin.z + motion.z * intersectTime;
+				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectZ >= box.z && intersectZ <= box.z + box.d && intersectTime >= 0) {
 					return new DriveableHit(driveable, type, intersectTime);
+				}
 			}
 			else if(origin.y > box.y + box.h) //Check face x = box.y + box.h
 			{
-				float intersectTime = (box.y + box.h - origin.y);
-				float intersectX = origin.x * intersectTime;
-				float intersectZ = origin.z * intersectTime;
-				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectZ >= box.z && intersectZ <= box.z + box.d)
+				float intersectTime = (box.y + box.h - origin.y) / motion.y;
+				float intersectX = origin.x + motion.x * intersectTime;
+				float intersectZ = origin.z + motion.z * intersectTime;
+				if(intersectX >= box.x && intersectX <= box.x + box.w && intersectZ >= box.z && intersectZ <= box.z + box.d && intersectTime >= 0) {
 					return new DriveableHit(driveable, type, intersectTime);
+				}
 			}
 		}
 

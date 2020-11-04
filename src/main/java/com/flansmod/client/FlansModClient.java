@@ -123,6 +123,8 @@ public class FlansModClient extends FlansMod
 	public static boolean crosshairUnscoped = true;
 	/** Whether to show the crosshair while scoped with the current gun */
 	public static boolean crosshairScoped = false;
+	/** Whether to show the crosshair while aimming with the current gun */
+	public static boolean crosshairAiming = true;
     
 	//Variables to hold the state of some settings so that after being hacked for scopes, they may be restored
 	/** The player's mouse sensitivity setting, as it was before being hacked by my mod */
@@ -359,6 +361,7 @@ public class FlansModClient extends FlansMod
 		{
 			crosshairUnscoped = ((ItemGun)itemInHand).type.renderCrosshairUnscoped;
 			crosshairScoped = ((ItemGun)itemInHand).type.renderCrosshairScoped;
+			crosshairAiming = ((ItemGun)itemInHand).type.renderCrosshairAiming;
 			canSprintShoot = ((ItemGun)itemInHand).type.canSprintShoot;
 		}
 		
