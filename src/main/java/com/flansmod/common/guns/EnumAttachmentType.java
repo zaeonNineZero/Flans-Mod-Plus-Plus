@@ -2,7 +2,7 @@ package com.flansmod.common.guns;
 
 public enum EnumAttachmentType 
 {
-	barrel, sights, stock, grip, generic;
+	barrel, sights, stock, grip, gadget, generic;
 	
 	public static EnumAttachmentType get(String s)
 	{

@@ -473,6 +473,11 @@ public class RenderGun implements IItemRenderer
 								GL11.glRotatef(-10F * reloadRotate * flip, 1F, 0F, 0F);
 								break;
 							}
+							case BREAK_ACTION :
+							{
+								GL11.glRotatef(reloadRotate * (model.breakAngle/3), 0F, 0F, 1F);
+								break;
+							}
 
 
 							case ALT_PISTOL_CLIP :
@@ -535,6 +540,7 @@ public class RenderGun implements IItemRenderer
 		AttachmentType barrelAttachment = type.getBarrel(item);
 		AttachmentType stockAttachment = type.getStock(item);
 		AttachmentType gripAttachment = type.getGrip(item);
+		AttachmentType gadgetAttachment = type.getGadget(item);
 		
 		//ItemStack scopeItemStack = type.getScopeItemStack(item);
 		//ItemStack barrelItemStack = type.getBarrelItemStack(item);
@@ -967,6 +973,45 @@ public class RenderGun implements IItemRenderer
 				if(stockModel != null)
 					stockModel.renderAttachment(f);
 				renderEngine.bindTexture(FlansModResourceHandler.getTexture(type));
+			}
+			GL11.glPopMatrix();
+		}
+		
+		//Gadget
+		if(gadgetAttachment != null)
+		{
+			GL11.glPushMatrix();
+			{
+				renderEngine.bindTexture(FlansModResourceHandler.getTexture(gadgetAttachment));
+				
+				//Gadget Rotation
+				GL11.glRotatef(reloadRotate * -model.breakAngle, 1F, 0F, 0F);
+				
+				if(model.gadgetIsOnBreakAction || type.gadgetIsOnBreakAction)
+				{
+					GL11.glTranslatef(model.barrelBreakPoint.x, model.barrelBreakPoint.y, model.barrelBreakPoint.z);
+					GL11.glRotatef(reloadRotate * -model.breakAngle, 0F, 0F, 1F);
+					GL11.glTranslatef(-model.barrelBreakPoint.x, -model.barrelBreakPoint.y, -model.barrelBreakPoint.z);
+				}
+				
+				//Stock Position as set by the model
+				GL11.glTranslatef(model.gadgetAttachPoint.x * type.modelScale, model.gadgetAttachPoint.y * type.modelScale, model.gadgetAttachPoint.z * type.modelScale);
+				//Offset set by the gun's config
+				GL11.glTranslatef(type.attachGadgetXOffset * type.modelScale, type.attachGadgetYOffset * type.modelScale, type.attachGadgetZOffset * type.modelScale);
+				
+				if(model.gadgetIsOnPump || type.gadgetIsOnPump)
+					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * model.pumpHandleDistance * type.modelScale, 0F, 0F);
+				else
+				if(model.gadgetIsOnSlide || type.gadgetIsOnSlide)
+					GL11.glTranslatef(-(animations.lastGunSlide + (animations.gunSlide - animations.lastGunSlide) * smoothing) * model.gunSlideDistance * type.modelScale, 0F, 0F);
+				
+				GL11.glScalef(gadgetAttachment.modelScale * type.attachGadgetScale, gadgetAttachment.modelScale * type.attachGadgetScale, gadgetAttachment.modelScale * type.attachGadgetScale);
+				ModelAttachment gadgetModel = gadgetAttachment.model;
+				if(gadgetModel != null)
+					gadgetModel.renderAttachment(f);
+				renderEngine.bindTexture(FlansModResourceHandler.getTexture(type));
+				
+				//attachGadgetRotation
 			}
 			GL11.glPopMatrix();
 		}

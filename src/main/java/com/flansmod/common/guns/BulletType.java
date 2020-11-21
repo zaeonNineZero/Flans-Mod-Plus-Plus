@@ -41,6 +41,11 @@ public class BulletType extends ShootableType
 	public boolean miningLaser = false;
 	public float miningHardness = 8F;
 	public float miningResistance = 9F;
+	
+	
+	public String ammunitionName = "Ammo";
+	public EnumAmmoMode ammoDisplayMode = EnumAmmoMode.EXACT;
+	
 
 	/** Exclusively for driveable usage. Replaces old isBomb and isShell booleans with something more flexible */
 	public EnumWeaponType weaponType = EnumWeaponType.NONE;
@@ -202,8 +207,27 @@ public class BulletType extends ShootableType
 			else if(split[0].equals("MiningLaserMaxResistance"))
 				miningResistance = Float.parseFloat(split[1]);
 			
+			
+			else if(split[0].equals("EnergyAmmo"))
+			{
+				ammunitionName = "Energy";
+				ammoDisplayMode = EnumAmmoMode.PERCENT;
+			}
+			
+			else if (split[0].equals("AmmunitionName"))
+			{
+				ammunitionName = split[1];
+				for (int i = 0; i < split.length - 2; i++)
+				{
+					ammunitionName = ammunitionName + " " + split[i + 2];
+				}
+			}
+			else if(split[0].equals("AmmoDisplayMode"))
+				ammoDisplayMode = EnumAmmoMode.getAmmoMode(split[1]);
+			
 			else if(split[0].equals("GlassMaxResistance"))
 				glassMaxHardness = Float.parseFloat(split[1]);
+			
 			
 			else if(split[0].equals("Bomb"))
 				weaponType = EnumWeaponType.BOMB;

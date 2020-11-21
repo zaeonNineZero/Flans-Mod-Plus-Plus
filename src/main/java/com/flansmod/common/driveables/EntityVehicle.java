@@ -643,10 +643,12 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (throttle > 0 ? 1 : -1);
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (motionH*(type.traction) > 0 ? 1 : 0);
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (adjustThrottle-2F+((type.traction+50)/50F) > 0 ? 1 : 0);
-						float velocityScale = (0.01F - Math.max( (0.024F / (type.traction/(3+((sThrottle-adjustThrottle)*type.driftTraction)) + 2F/3F)) * (Math.min(Math.max(sThrottle*2-0.3F,0),1)),0.01F )) * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (adjustThrottle > 0 ? 1 : -1);
-
-						wheel.motionX -= wheel.getSpeedXZ() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-						wheel.motionZ += wheel.getSpeedXZ() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
+						float velocityScale = (0.01F - Math.max( (0.024F / (type.traction/(3+((sThrottle-adjustThrottle)*(type.driftTraction*1F))) + 2F/4F)) * (Math.min(Math.max(sThrottle*2-0.3F,0),1)),0.01F )) * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (adjustThrottle > 0 ? 1 : -1);
+						
+						float driftScale = (wheelsYaw*Math.min((sThrottle-adjustThrottle) * (type.driftTraction*1F),0))*4F;
+						
+						wheel.motionX -= wheel.getSpeedXZ() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * (wheelsYaw - driftScale);
+						wheel.motionZ += wheel.getSpeedXZ() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * (wheelsYaw - driftScale);
 					}
 					else
 					{
@@ -781,7 +783,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				yaw = axes.getYaw()/180F*3.14159F + (effectiveWheelSpeed);
 			} else {
 				//float velocityScale = 0.1F * throttle * (throttle > 0 ? type.maxThrottle : type.maxNegativeThrottle) * data.engine.engineSpeed;
-				float velocityScale = 0.1F * adjustThrottle * (adjustThrottle > 0 ? type.maxThrottle : type.maxNegativeThrottle) * data.engine.engineSpeed;
+				float velocityScale = 0.1F * Math.min(adjustThrottle,Math.abs(type.driftSpeed)) * (adjustThrottle > 0 ? type.maxThrottle : type.maxNegativeThrottle) * data.engine.engineSpeed;
 				float steeringScale = 0.1F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier);
 				float effectiveWheelSpeed = ((wheelsYaw * steeringScale)) * velocityScale;
 				yaw = axes.getYaw()/180F*3.14159F + (effectiveWheelSpeed);
@@ -802,14 +804,14 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 
 		//Sounds
 		//Starting sound
-		if ((((Math.abs(throttle) > 0.02F && Math.abs(throttle) < 0.25F && hasEnoughFuel()) || (!hasEnoughFuel() && Math.abs(throttle) > 0.02F))) && soundPosition == 0)
+		if ((((Math.abs(throttle) > 0.02F && Math.abs(throttle) < type.engineSoundThreshold && hasEnoughFuel()) || (!hasEnoughFuel() && Math.abs(throttle) > 0.02F))) && soundPosition == 0)
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.startSoundRange, dimension, type.startSound, false);
 			soundPosition = type.startSoundLength;
 		}
 		//Driving sound
-		if (throttle >= 0.25F && soundPosition == 0 && hasEnoughFuel())
+		if (throttle >= type.engineSoundThreshold && soundPosition == 0 && hasEnoughFuel())
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.engineSoundRange, dimension, type.engineSound, false);
@@ -825,7 +827,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 		}
 		}
 		//Reverse sound
-		if (throttle <= -0.25F && soundPosition == 0 && hasEnoughFuel())
+		if (throttle <= -type.backSoundThreshold && soundPosition == 0 && hasEnoughFuel())
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.backSoundRange, dimension, type.backSound, false);

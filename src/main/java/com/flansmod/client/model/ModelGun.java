@@ -39,6 +39,7 @@ public class ModelGun extends ModelBase
 	public Vector3f scopeAttachPoint = new Vector3f();
 	public Vector3f stockAttachPoint = new Vector3f();
 	public Vector3f gripAttachPoint = new Vector3f();
+	public Vector3f gadgetAttachPoint = new Vector3f();
 	
 	//Muzzle flash models
 	public ModelRendererTurbo flashModel[][] = new ModelRendererTurbo[0][0];
@@ -70,8 +71,10 @@ public class ModelGun extends ModelBase
 	public float tiltGunTime = 0.25F, unloadClipTime = 0.25F, loadClipTime = 0.25F, untiltGunTime = 0.25F;
 	/** If true, then the scope attachment will move with the top slide */
 	public boolean scopeIsOnSlide = false;
+	public boolean gadgetIsOnSlide = false;
 	/** If true, then the scope attachment will move with the break action. Can be combined with the above */
 	public boolean scopeIsOnBreakAction = false;
+	public boolean gadgetIsOnBreakAction = false;
 	/** For rifles and shotguns. Currently a generic reload animation regardless of how full the internal magazine already is */
 	public float numBulletsInReloadAnimation = 1;
 	/** For shotgun pump handles and rifle bolts */
@@ -82,6 +85,7 @@ public class ModelGun extends ModelBase
 	public float endLoadedAmmoDistance = 1F;
 	/** If true, then the grip attachment will move with the shotgun pump */
 	public boolean gripIsOnPump = false;
+	public boolean gadgetIsOnPump = false;
 	/** The rotation point for the barrel break */
 	public Vector3f barrelBreakPoint = new Vector3f();
 	/** The amount the revolver barrel flips out by */

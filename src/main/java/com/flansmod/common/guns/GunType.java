@@ -174,6 +174,8 @@ public class GunType extends InfoType implements IScope
 	
 	/**Whether to swing the weapon on shooting.  Useful for making things like magic wands... for whatever reason*/
 	public boolean swingOnShoot = false;
+	public boolean showAmmoAsUses = false;
+	public boolean simpleAmmoDisplay = false;
 	
 	/**The delay before the gun can reload by right clicking when empty.  Has no effect when lower than shootDelay*/
 	public int reloadDelay = 10;
@@ -215,11 +217,22 @@ public class GunType extends InfoType implements IScope
 	public float attachStockYOffset = 0.0F;
 	public float attachStockZOffset = 0.0F;
 	
+	/*Gadget Offsets*/
+	public float attachGadgetXOffset = 0.0F;
+	public float attachGadgetYOffset = 0.0F;
+	public float attachGadgetZOffset = 0.0F;
+	public float attachGadgetRotation = 0.0F;
+	
+	public boolean gadgetIsOnSlide = false;
+	public boolean gadgetIsOnBreakAction = false;
+	public boolean gadgetIsOnPump = false;
+	
 	
 	public float attachScopeScale = 1.0F;
 	public float attachBarrelScale = 1.0F;
 	public float attachGripScale = 1.0F;
 	public float attachStockScale = 1.0F;
+	public float attachGadgetScale = 1.0F;
 	
 
 	//Information
@@ -319,7 +332,7 @@ public class GunType extends InfoType implements IScope
 	public ArrayList<AttachmentType> allowedAttachments = new ArrayList<AttachmentType>();
 	/** Whether each attachment slot is available */
 	public boolean allowBarrelAttachments = false, allowScopeAttachments = false,
-			allowStockAttachments = false, allowGripAttachments = false;
+			allowStockAttachments = false, allowGripAttachments = false, allowGadgetAttachments = false;
 	/** The number of generic attachment slots there are on this gun */
 	public int numGenericAttachmentSlots = 0;
 
@@ -329,7 +342,7 @@ public class GunType extends InfoType implements IScope
 	/** The default paintjob for this gun. This is created automatically in the load process from existing info */
 	public Paintjob defaultPaintjob;
 	/** The name for the default paintjob for this gun. */
-	public String defaultPaintjobName = "null";
+	public String defaultPaintjobName = "<default>";
 
 	/** The static hashmap of all guns by shortName */
 	public static HashMap<String, GunType> guns = new HashMap<String, GunType>();
@@ -664,6 +677,8 @@ public class GunType extends InfoType implements IScope
 				allowStockAttachments = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("AllowGripAttachments"))
 				allowGripAttachments = Boolean.parseBoolean(split[1].toLowerCase());
+			else if(split[0].equals("AllowGadgetAttachments"))
+				allowGadgetAttachments = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("NumGenericAttachmentSlots"))
 				numGenericAttachmentSlots = Integer.parseInt(split[1]);
 
@@ -767,6 +782,11 @@ public class GunType extends InfoType implements IScope
 			else if(split[0].equals("SprintAnimationType"))
 				sprintAnim = EnumSprintHoldType.getSprintHoldType(split[1].toLowerCase());
 			
+			else if(split[0].equals("ShowAmmoAsUses"))
+				showAmmoAsUses = Boolean.parseBoolean(split[1]);
+			else if(split[0].equals("SimpleAmmoDisplay"))
+				simpleAmmoDisplay = Boolean.parseBoolean(split[1]);
+			
 			else if(split[0].equals("ReloadDelay"))
 				reloadDelay = Integer.parseInt(split[1]);
 			
@@ -810,6 +830,20 @@ public class GunType extends InfoType implements IScope
 				attachStockYOffset = Float.parseFloat(split[2])/16;
 				attachStockZOffset = Float.parseFloat(split[3])/16;
 			}
+			else if(split[0].equals("GadgetAttachmentOffset"))
+			{
+				attachGadgetXOffset = Float.parseFloat(split[1])/16;
+				attachGadgetYOffset = Float.parseFloat(split[2])/16;
+				attachGadgetZOffset = Float.parseFloat(split[3])/16;
+			}
+			else if(split[0].equals("GadgetAttachmentRotation"))
+				attachGadgetRotation = Float.parseFloat(split[1]);
+			else if(split[0].toLowerCase().equals("gadgetisonslide"))
+				gadgetIsOnSlide = Boolean.parseBoolean(split[1]);
+			else if(split[0].toLowerCase().equals("gadgetisonbreakaction"))
+				gadgetIsOnBreakAction = Boolean.parseBoolean(split[1]);
+			else if(split[0].toLowerCase().equals("gadgetisonpump"))
+				gadgetIsOnPump = Boolean.parseBoolean(split[1]);
 			
 			else if(split[0].equals("AllAttachmentScale"))
 			{
@@ -817,6 +851,7 @@ public class GunType extends InfoType implements IScope
 				attachBarrelScale = Float.parseFloat(split[1]);
 				attachGripScale = Float.parseFloat(split[1]);
 				attachStockScale = Float.parseFloat(split[1]);
+				attachGadgetScale = Float.parseFloat(split[1]);
 			}
 			else if(split[0].equals("ScopeAttachmentScale"))
 				attachScopeScale = Float.parseFloat(split[1]);
@@ -826,6 +861,8 @@ public class GunType extends InfoType implements IScope
 				attachGripScale = Float.parseFloat(split[1]);
 			else if(split[0].equals("StockAttachmentScale"))
 				attachStockScale = Float.parseFloat(split[1]);
+			else if(split[0].equals("GadgetAttachmentScale"))
+				attachGadgetScale = Float.parseFloat(split[1]);
 			
 			
 			
@@ -940,6 +977,7 @@ public class GunType extends InfoType implements IScope
 		appendToList(gun, "scope", attachments);
 		appendToList(gun, "stock", attachments);
 		appendToList(gun, "grip", attachments);
+		appendToList(gun, "gadget", attachments);
 		return attachments;
 	}
 
@@ -955,6 +993,7 @@ public class GunType extends InfoType implements IScope
 	public AttachmentType getScope(ItemStack gun) { return getAttachment(gun, "scope"); }
 	public AttachmentType getStock(ItemStack gun) { return getAttachment(gun, "stock"); }
 	public AttachmentType getGrip(ItemStack gun) { return getAttachment(gun, "grip"); }
+	public AttachmentType getGadget(ItemStack gun) { return getAttachment(gun, "gadget"); }
 	public AttachmentType getGeneric(ItemStack gun, int i) { return getAttachment(gun, "generic_" + i); }
 
 	//Attachment ItemStack getter methods
@@ -962,6 +1001,7 @@ public class GunType extends InfoType implements IScope
 	public ItemStack getScopeItemStack(ItemStack gun) { return getAttachmentItemStack(gun, "scope"); }
 	public ItemStack getStockItemStack(ItemStack gun) { return getAttachmentItemStack(gun, "stock"); }
 	public ItemStack getGripItemStack(ItemStack gun) { return getAttachmentItemStack(gun, "grip"); }
+	public ItemStack getGadgetItemStack(ItemStack gun) { return getAttachmentItemStack(gun, "gadget"); }
 	public ItemStack getGenericItemStack(ItemStack gun, int i) { return getAttachmentItemStack(gun, "generic_" + i); }
 
 	/** Generalised attachment getter method */
@@ -996,6 +1036,7 @@ public class GunType extends InfoType implements IScope
 			attachmentTags.setTag("scope", new NBTTagCompound());
 			attachmentTags.setTag("stock", new NBTTagCompound());
 			attachmentTags.setTag("grip", new NBTTagCompound());
+			attachmentTags.setTag("gadget", new NBTTagCompound());
 
 			gun.stackTagCompound.setTag("attachments", attachmentTags);
 		}

@@ -183,7 +183,9 @@ public class DriveableType extends InfoType
 	public int idleSoundLength = 50;
 	public String backSound = "";
 	public int backSoundLength;
-
+	
+	public float engineSoundThreshold = 0.25F;
+	public float backSoundThreshold = 0.25F;
 	public boolean idleSoundAsMotor = false;
 
 	public boolean collisionDamageEnable = false;
@@ -787,6 +789,10 @@ public class DriveableType extends InfoType
 				backSoundLength = Integer.parseInt(split[1]);
 			else if(split[0].equals("SoundTime"))
 				soundTime = Integer.parseInt(split[1]);
+			else if(split[0].equals("EngineSoundThreshold"))
+				engineSoundThreshold = Math.abs(Float.parseFloat(split[1]));
+			else if(split[0].equals("BackSoundThreshold"))
+				backSoundThreshold = Math.abs(Float.parseFloat(split[1]));
 			else if(split[0].equals("UseMotorSound"))
 				idleSoundAsMotor = Boolean.parseBoolean(split[1]);
             else if(split[0].equals("YawSoundLength"))

@@ -181,7 +181,14 @@ public class TickHandlerClient
 							drawSlotInventory(mc.fontRenderer, bulletStack, i / 2 + 16 + x, j - 75);
 							GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 							RenderHelper.disableStandardItemLighting();
-							String s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage();
+							
+							//Find the string we are displaying next to the ammo item
+							String s = "";
+							if(gunType.simpleAmmoDisplay)
+							s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "";
+							else
+							if(gunType.simpleAmmoDisplay == false)
+							s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage();
 							
 							if(bulletStack.getMaxDamage() == 1)
 								s = "";
@@ -211,7 +218,12 @@ public class TickHandlerClient
 								if(bulletStack != null && bulletStack.getItem() != null && bulletStack.getItemDamage() < bulletStack.getMaxDamage())
 								{
 									//Find the string we are displaying next to the ammo item
-									String s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage();
+									String s = "";
+									if(offHandGunType.simpleAmmoDisplay)
+									s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "";
+									else
+									if(offHandGunType.simpleAmmoDisplay == false)
+									s = (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage();
 									
 									if(bulletStack.getMaxDamage() == 1)
 										s = "";

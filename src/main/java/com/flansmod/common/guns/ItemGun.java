@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -177,7 +178,7 @@ public class ItemGun extends Item implements IFlanItem
 		if(type.showPaintjobName)
 		{
 			Paintjob currentPaint = type.getPaintjob(getPaintTag(stack));
-			if (!currentPaint.paintjobName.toLowerCase().equals("null"))
+			if (!currentPaint.paintjobName.toLowerCase().equals("null") && !currentPaint.paintjobName.equals("<default>"))
 			{
 			String line = "\u00a77Paintjob: " + "\u00A7F" + currentPaint.paintjobName;
 			lines.add(line);
@@ -203,17 +204,37 @@ public class ItemGun extends Item implements IFlanItem
 			lines.add(line);
 			}
 		}
+		
+		boolean loaded = false;
+		int bulletAmount = 0;
+		String bulletsLine = "";
 		for(int i = 0; i < type.numAmmoItemsInGun; i++)
 		{
 			ItemStack bulletStack = getBulletItemStack(stack, i);
 			if(bulletStack != null && bulletStack.getItem() instanceof ItemBullet)
 			{
 				BulletType bulletType = ((ItemBullet)bulletStack.getItem()).type;
+				loaded = true;
+				bulletAmount += (bulletStack.getMaxDamage() - bulletStack.getItemDamage());
+				
+				if (GuiScreen.isShiftKeyDown())
+				{
 				//String line = bulletType.name + (bulletStack.getMaxDamage() == 1 ? "" : " " + (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage());
 				String line = bulletType.name + " " + (bulletStack.getMaxDamage() - bulletStack.getItemDamage()) + "/" + bulletStack.getMaxDamage();
 				lines.add(line);
+				}
 			}
 		}
+		if (loaded && !GuiScreen.isShiftKeyDown())
+		{
+			if (type.showAmmoAsUses)
+			bulletsLine = "Uses Left: " + bulletAmount + " (Hold shift for details)";
+			else
+			bulletsLine = "Shots Left: " + bulletAmount + " (Hold shift for details)";
+			
+			lines.add(bulletsLine);
+		}
+		
 		if(FlansMod.showPackOrigin && !type.packName.isEmpty())
 		{
 			lines.add("From: " + type.packName);

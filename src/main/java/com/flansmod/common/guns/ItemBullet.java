@@ -66,6 +66,16 @@ public class ItemBullet extends ItemShootable implements IFlanItem
 		{
 			lines.add("From: " + type.packName);
 		}
+		if(type.roundsPerItem > 1)
+		{
+            if (type.ammoDisplayMode == EnumAmmoMode.PERCENT)
+			{
+				float ammoPercent = (((getMaxDamage() - stack.getItemDamage())*1000)/(getMaxDamage()));
+				lines.add(type.ammunitionName + ": " + (ammoPercent/10) + "%" + " (" + (getMaxDamage() - stack.getItemDamage()) + ")");
+			}
+			else
+				lines.add(type.ammunitionName + ": " + (getMaxDamage() - stack.getItemDamage()) + "/" + getMaxDamage());
+		}
 	}
 
 	//Can be overriden to allow new types of bullets to be created, for planes

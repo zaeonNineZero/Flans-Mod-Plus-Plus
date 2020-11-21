@@ -2,6 +2,19 @@
 	CHANGELOG
 
 
+[Version 1.0.3]
+* Added preliminary support for Gadget attachments (Implemented separately from FMU:SE's version)
+	- Intended for rail-mounted laser sights or flashlights
+* Added a simple render mode for the gun ammo HUD, which only displays the amount of shots left.
+* Simplified the ammo remaining tooltip for guns to show how many shots are remaining.
+	- Hold shift to view details on loaded ammo items and how many shots each item has left.
+* Added a per-gun option to show remaining shots as "uses" in the item tooltip.
+* Added a remaining shots tooltip for bullet/ammo items, with new per-item config lines to control how it is displayed.
+
+* Added lines for controlling the throttle threshold at which vehicles will switch from their starting sounds to their driving/backing sounds. 
+
+
+
 [Version 1.0.2]
 * Separated firemode indicator from the ammo counter- it is now rendered independently.
 * Added controls for whether to show a gun's crosshair in various situations, such as when a scope is attached or when aiming.

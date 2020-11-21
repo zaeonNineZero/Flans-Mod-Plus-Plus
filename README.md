@@ -4,7 +4,7 @@ Flan's Mod ++ (FM++) is a fork of Flan's Mod Plus for 1.7.10, with new features-
 Original created for use in a modpack, the goal of FM++ is to provide an improved user-end experience, with easy-to-use config options to customize your server or modpack's experience.  All new configurable options can be set up in the gun/vehicle/item .txt config files themselves- no need to edit and recompile .java files over and over again just to move an attachment.
 
 
-1.0.0 Feature List
+Feature List
 ------------
 
 Many New Features for Guns, Attachments, Ammo, and Grenades:
@@ -26,11 +26,14 @@ Many New Features for Guns, Attachments, Ammo, and Grenades:
 
 * Guns with multiple fire modes will now show their fire mode outside the ammo counter text; this can be forced on for guns with only a single fire mode as well.
 * Added per-gun configuration for whether to sure the default crosshair in certain situations, such as aiming vs. not aiming and scope attached vs. no scope attached.
+* The ammo-remaining tooltip for guns has been simplified; holding shift will show the full list of loaded ammo items.
+* The ammo counter on the HUD now has a secondary display mode for hiding the maximum shots of a loaded ammo item.
 
 * Guns can be configured to rely on bullets for determining spread, projectile count, and velocity values.  Useful for making birdshot shells, slug rounds, or a multi-projectile ammo for an energy/plasma weapon.
 * Glass block with a high enough hardness or blast resistant are now invulnerable to being broken by bullets.  Thermal Expansion's Reinforced Glass is truly bullet-proof!
 * Mining Lasers! Use "MiningLaserBeam True", then add MiningLaserMaxHardness and MiningLaserMaxResistance to make a bullet behave like a Mining Laser projectile.  If a block is not too hard or blast resistant, it will be mined and dropped by the bullet when hit.
 * Ammo items can now properly drop other items, such as parts, when emptied in Survival Mode.  From example, a laser weapon's ammo could drop an empty battery, which can then be recharged.
+* Ammo items display how much ammo they have remaining, with config lines to alter how it is displayed.
 
 * Grenades can now have descriptions added to them. Good for letting players know how long a grenade's fuse lasts.
 * Grenade and Bullet models can now be rescaled using ModelScale.
@@ -50,6 +53,7 @@ New Vehicle Mechanics.
 * Boat Vehicles have improved physics; they stop moving when out of water, and will not change pitch/roll.
 * Vehicle idle sounds (used when Throttle is near or at 0 while the driver's seat is occupied) can be set to continue looping regardless of throttle level, providing a background motor sound.
 * Acceleration/Deceleration rates and Traction can be configured in the vehicle config .txt files.
+* Vehicle sound threshold config lines for controlling the throttle level at which driving sounds start playing.
 
 * Engines can now be configured to only take certain types of fuel.  If the Fuel Type of the fuel item does not match the Fuel Type of the engine, no fuel will be added to the engine.
 * Fuel items can now leave behind other items when emptied.  For example, a Gasoline Can can turn into an Empty Fuel Can once all of its fuel is consumed.

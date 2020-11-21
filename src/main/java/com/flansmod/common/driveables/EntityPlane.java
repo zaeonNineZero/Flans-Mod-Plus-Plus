@@ -993,14 +993,14 @@ public class EntityPlane extends EntityDriveable
 
 		//Sounds
 		//Starting sound
-		if ((throttle > 0.01F && throttle < 0.2F || !canThrust && throttle > 0.01F) && soundPosition == 0)
+		if ((throttle > 0.01F && throttle < type.engineSoundThreshold || !canThrust && throttle > 0.01F) && soundPosition == 0)
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, FlansMod.soundRange, dimension, type.startSound, false);
 			soundPosition = type.startSoundLength;
 		}
 		//Flying sound
-		if (throttle > 0.2F && canThrust && soundPosition == 0)
+		if (throttle > type.engineSoundThreshold && canThrust && soundPosition == 0)
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, FlansMod.soundRange, dimension, type.engineSound, false);

@@ -6,6 +6,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -67,12 +68,13 @@ public class GuiGunModTable extends GuiContainer
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         mc.renderEngine.bindTexture(texture);
+		FontRenderer fontrenderer = mc.fontRenderer;
         
         int xOrigin = (width - xSize) / 2;
         int yOrigin = (height - ySize) / 2;
         drawTexturedModalRect(xOrigin, yOrigin, 0, 0, xSize, ySize);
                 
-        for(int z = 1; z < 13; z++)
+        for(int z = 1; z < 14; z++)
         	inventorySlots.getSlot(z).yDisplayPosition = -1000;
         
         ItemStack gunStack = inventorySlots.getSlot(0).getStack();
@@ -98,6 +100,11 @@ public class GuiGunModTable extends GuiContainer
         	{
         		drawTexturedModalRect(xOrigin + 77, yOrigin + 133, 202, 148, 22, 22);
         		inventorySlots.getSlot(4).yDisplayPosition = 136;
+        	}
+        	if(gunType.allowGadgetAttachments)
+        	{
+        		drawTexturedModalRect(xOrigin + 51, yOrigin + 107, 176, 96, 22, 22);
+        		inventorySlots.getSlot(5).yDisplayPosition = 136;
         	}
         	
         	for(int x = 0; x < 2; x++)
@@ -146,7 +153,25 @@ public class GuiGunModTable extends GuiContainer
         //Draw hover box for paintjob
         if(hoveringOver != null)
         {
-        	int numDyes = hoveringOver.dyesNeeded.length;
+        	int originX = mouseX + 6;
+        	int originY = mouseY - 20;
+        	
+        	//Get the paintjob name
+			String paintjobName = hoveringOver.paintjobName;
+	        
+			if(!paintjobName.equals("null"))
+			{
+				GL11.glColor4f(1F, 1F, 1F, 1F);
+	        	GL11.glDisable(GL11.GL_LIGHTING);
+				
+				
+				if (!paintjobName.equals("<default>"))
+				drawCenteredString(fontrenderer, paintjobName, originX + 0, originY + 3, 0xffffff);
+				else
+				drawCenteredString(fontrenderer, "Default", originX + 0, originY + 3, 0xffffff);
+			}
+			
+			int numDyes = hoveringOver.dyesNeeded.length;
         	//Only draw box if there are dyes needed
         	if(numDyes != 0 && !inventory.player.capabilities.isCreativeMode)
         	{
@@ -170,32 +195,29 @@ public class GuiGunModTable extends GuiContainer
 	        	GL11.glColor4f(1F, 1F, 1F, 1F);
 	        	GL11.glDisable(GL11.GL_LIGHTING);
 	        	mc.renderEngine.bindTexture(texture);
-	        	
-	        	int originX = mouseX + 6;
-	        	int originY = mouseY - 20;
 	
-	        	//If we have only one, use the double ended slot 
+				//If we have only one, use the double ended slot 
 	        	if(numDyes == 1)
 	        	{
-	        		drawTexturedModalRect(originX, originY, (haveDyes[0] ? 201 : 178), 218, 22, 22);
+	        		drawTexturedModalRect(originX, originY + 12, (haveDyes[0] ? 201 : 178), 218, 22, 22);
 	        	}
 	        	else
 	        	{
 	        		//First slot
-	        		drawTexturedModalRect(originX, originY, 178, (haveDyes[0] ? 195 : 172), 20, 22);
+	        		drawTexturedModalRect(originX, originY + 12, 178, (haveDyes[0] ? 195 : 172), 20, 22);
 	        		//Middle slots
 	        		for(int s = 1; s < numDyes - 1; s++)
 	        		{
-	        			drawTexturedModalRect(originX + 2 + 18 * s, originY, 199, (haveDyes[s] ? 195 : 172), 18, 22);
+	        			drawTexturedModalRect(originX + 2 + 18 * s, originY + 12, 199, (haveDyes[s] ? 195 : 172), 18, 22);
 	        		}
 	        		//Last slot
-	        		drawTexturedModalRect(originX + 2 + 18 * (numDyes - 1), originY, 218, (haveDyes[numDyes - 1] ? 195 : 172), 20, 22);
+	        		drawTexturedModalRect(originX + 2 + 18 * (numDyes - 1), originY + 12, 218, (haveDyes[numDyes - 1] ? 195 : 172), 20, 22);
 	        	}
 	        	
 	        	for(int s = 0; s < numDyes; s++)
 	        	{
-	        		itemRender.renderItemIntoGUI(this.fontRendererObj, mc.getTextureManager(), hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3);
-	        		itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, mc.getTextureManager(), hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3);
+	        		itemRender.renderItemIntoGUI(this.fontRendererObj, mc.getTextureManager(), hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3 + 12);
+	        		itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, mc.getTextureManager(), hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3 + 12);
 	        	}
         	}
         }
