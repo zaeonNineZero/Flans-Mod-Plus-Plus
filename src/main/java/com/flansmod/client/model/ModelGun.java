@@ -13,7 +13,7 @@ public class ModelGun extends ModelBase
 	//Shapebox template. For quick copy pasting
 	//, 0F, /* 0 */ 0F, 0F, 0F, /* 1 */ 0F, 0F, 0F, /* 2 */ 0F, 0F, 0F, /* 3 */ 0F, 0F, 0F, /* 4 */ 0F, 0F, 0F, /* 5 */ 0F, 0F, 0F, /* 6 */ 0F, 0F, 0F, /* 7 */ 0F, 0F, 0F);	
 	
-	//These first 6 models are static with no animation
+	//These first 7 models are static with no animation
 	public ModelRendererTurbo[] gunModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] backpackModel = new ModelRendererTurbo[0]; //For flamethrowers and such like. Rendered on the player's back
 	//These models appear when no attachment exists
@@ -21,6 +21,8 @@ public class ModelGun extends ModelBase
 	public ModelRendererTurbo[] defaultScopeModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] defaultStockModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] defaultGripModel = new ModelRendererTurbo[0];
+	//This model appears when a scope is attached
+	public ModelRendererTurbo[] addonScopeModel = new ModelRendererTurbo[0];
 	
 	//Animated models follow. 
 	public ModelRendererTurbo[] ammoModel = new ModelRendererTurbo[0];
@@ -66,6 +68,7 @@ public class ModelGun extends ModelBase
 	
 	//Various animation parameters
 	public float gunSlideDistance = 1F / 4F;
+	public boolean moveSlideOnPump = false;
 	public EnumAnimationType animationType = EnumAnimationType.NONE;
 	public EnumMeleeAnimation meleeAnimation = EnumMeleeAnimation.DEFAULT;
 	public float tiltGunTime = 0.25F, unloadClipTime = 0.25F, loadClipTime = 0.25F, untiltGunTime = 0.25F;
@@ -183,6 +186,11 @@ public class ModelGun extends ModelBase
 	public void renderDefaultScope(float f)
 	{
 		render(defaultScopeModel, f);
+	}
+	
+	public void renderAddonScope(float f)
+	{
+		render(addonScopeModel, f);
 	}
 	
 	public void renderDefaultBarrel(float f)

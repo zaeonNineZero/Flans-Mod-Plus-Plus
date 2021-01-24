@@ -23,6 +23,7 @@ Many New Features for Guns, Attachments, Ammo, and Grenades:
 * Configurable accuracy changes for firing while aiming vs. not aiming.
 * Added a delay before you can reload a gun by right/left clicking; this can be bypassed by using R to reload, or by adding the ReloadDelay line to a gun file.
 * Added the NamedPaintjob line, which has an additional input for adding names to a gun's paintjob.  Use "ShowPaintjobName True" to enable paintjob names in the item's description, and add DefaultPaintjobName to set the name of the default paintjob. (If DefaultPaintjobName is unset, it will not be shown in the description regardless)
+* Added paintjob name tooltips for named weapon paintjobs in the Gun Modification Table.
 
 * Guns with multiple fire modes will now show their fire mode outside the ammo counter text; this can be forced on for guns with only a single fire mode as well.
 * Added per-gun configuration for whether to sure the default crosshair in certain situations, such as aiming vs. not aiming and scope attached vs. no scope attached.
@@ -39,7 +40,8 @@ Many New Features for Guns, Attachments, Ammo, and Grenades:
 * Grenade and Bullet models can now be rescaled using ModelScale.
 
 * Bipods: Use "Bipod True" and the BipodEffectivenessMultiplier multiplier to set make a grip function as a Bipod.  Bipods only apply their recoil reduction modifier when sneaking.
-* BipodEffectivenessMultiplier stacks with RecoilMultiplier, so you can both to make a Grip Pod!
+* Preliminary support for two-stance grip models, useful for Grip Pods or Bipods.
+* BipodEffectivenessMultiplier stacks with RecoilMultiplier, which is handy for Grip Pods.
 
 
 New Vehicle Mechanics.
@@ -49,7 +51,9 @@ New Vehicle Mechanics.
 
 * Vehicles decelerate automatically when W or S aren't being held.
 * Enable Cruise Control using the Mode Switch key to keep your vehicle's throttle steady.
-* Vehicles can drift/slide when turning; vehicles with lower Traction will drift more.  Driving at high throttle levels will result in lower traction and more sliding.
+* Vehicles can drift/slide when turning; tap the brakes while turning to start drifting.
+* Boosting!  Tap the Pitch Down key to activate a short speed boost, which drains a refillable power meter.
+
 * Boat Vehicles have improved physics; they stop moving when out of water, and will not change pitch/roll.
 * Vehicle idle sounds (used when Throttle is near or at 0 while the driver's seat is occupied) can be set to continue looping regardless of throttle level, providing a background motor sound.
 * Acceleration/Deceleration rates and Traction can be configured in the vehicle config .txt files.

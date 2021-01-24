@@ -23,6 +23,7 @@ public class DriveablePart
 	public int health;
 	public int fireTime;
 	public boolean onFire;
+	public int dmgCooldown = 0;
 	/** Keeps track of whether death code has been called or not */
 	public boolean dead;
 	public EntityDriveable owner;
@@ -41,11 +42,22 @@ public class DriveablePart
 			fireTime--;
 		if(fireTime == 0)
 			onFire = false;
-		if(onFire)
+		
+		if(dmgCooldown > 0)
+			dmgCooldown--;
+		
+		if(onFire && dmgCooldown <= 0)
+		{
+			dmgCooldown = 2;
 			health--;
+		}
 		if(health <= 0 && maxHealth > 0)
 		{
 			dead = true;
+		}
+
+		if (health > maxHealth) {
+			health = maxHealth;
 		}
 		this.owner = driveable;
 	}
@@ -366,6 +378,10 @@ public class DriveablePart
 		//Perform damage code
 		if(bullet != null)
 		{
+			
+			EntityDriveable parent = hit.driveable;
+			parent.worldObj.playSoundEffect(parent.posX, parent.posY, parent.posZ, "flansmod:vehiclehit", 1.1F, (float) ((Math.random()*0.2F)+1.1F));
+			
 			if(hit.driveable instanceof EntityPlane)
 			{
 				health -= bullet.damage * bullet.type.damageVsPlanes;
@@ -425,8 +441,11 @@ public class DriveablePart
 
 	public boolean attack(float damage, boolean fireDamage) 
 	{
-		health -= damage;
-		//PacketPlaySound.sendSoundPacket(box.x + (box.w/2), box.y + (box.h/2), box.z + (box.d/2), 16F, hostDriveable.dimension, "vehicledamage", false);
+		if(dmgCooldown <= 0)
+		{
+			health -= damage;
+			dmgCooldown = 2;
+		}
 		
 		if(fireDamage)
 		{				

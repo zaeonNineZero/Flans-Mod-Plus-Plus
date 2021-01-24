@@ -299,7 +299,7 @@ public class EntityPlane extends EntityDriveable
 				{
 					if(worldObj.isAirBlock((int)posX, (int)(posY-3), (int)posZ)){
 					varGear = !varGear;
-					player.addChatMessage(new ChatComponentText("Landing gear " + (varGear ? "down" : "up")));
+					player.addChatMessage(new ChatComponentText("Landing gear " + (varGear ? "deployed" : "retracted")));
 					toggleTimer = 10;
 					FlansMod.getPacketHandler().sendToServer(new PacketDriveableControl(this));
 					}
@@ -312,7 +312,7 @@ public class EntityPlane extends EntityDriveable
 				{
 					varDoor = !varDoor;
 					if(type.hasDoor)
-						player.addChatMessage(new ChatComponentText("Doors " + (varDoor ? "open" : "closed")));
+						player.addChatMessage(new ChatComponentText("Doors " + (varDoor ? "opened" : "closed")));
 					toggleTimer = 10;
 					FlansMod.getPacketHandler().sendToServer(new PacketDriveableControl(this));
 				}
@@ -727,7 +727,7 @@ public class EntityPlane extends EntityDriveable
 		}*/
 
 		//Some constants
-		float g = (!onDeck)?0.98F / 10F: 0;
+		float g = (!onDeck)?0.98F / 4F: 0;
 		float drag = 1F - (0.05F * type.drag);
 		float wobbleFactor = 0F;//.005F;
 
@@ -922,7 +922,8 @@ public class EntityPlane extends EntityDriveable
 				wheel.rotationYaw = axes.getYaw();
 
 				//Pull wheels towards car
-				Vector3f targetWheelPos = axes.findLocalVectorGlobally(getPlaneType().wheelPositions[wheel.ID].position);
+				Vector3f wPos = getPlaneType().wheelPositions[wheel.ID].position;
+				Vector3f targetWheelPos = axes.findLocalVectorGlobally(wPos);
 				Vector3f currentWheelPos = new Vector3f(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
 
 				float targetWheelLength = targetWheelPos.length();

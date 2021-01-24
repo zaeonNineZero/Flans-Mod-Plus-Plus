@@ -88,6 +88,7 @@ public class ItemGun extends Item implements IFlanItem
 	public int lockOnSoundDelay;
 	
 	public boolean isScoped = false;
+	public boolean crouched = false;
 
 	public int impactX = 0;
 	public int impactY = 0;
@@ -244,6 +245,9 @@ public class ItemGun extends Item implements IFlanItem
 	@SideOnly(Side.CLIENT)
 	public void onUpdateClient(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
 	{
+		//Reset the crouched variable
+		crouched = false;
+		
 		if(entity instanceof EntityPlayer && ((EntityPlayer)entity).inventory.getCurrentItem() == itemstack)
 		{
 			//Get useful objects
@@ -252,6 +256,7 @@ public class ItemGun extends Item implements IFlanItem
 			PlayerData data = PlayerHandler.getPlayerData(player, Side.CLIENT);
 			
 			isScoped = (FlansModClient.zoomProgress > 0.8F ? true : false);
+			crouched = (player.isSneaking() ? true : false);
 
 			//Play idle sounds
 			if (soundDelay <= 0 && type.idleSound != null)

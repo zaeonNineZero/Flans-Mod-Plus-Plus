@@ -20,6 +20,7 @@ public class PacketDriveableControl extends PacketBase
 	public double motX, motY, motZ;
 	public float avelx, avely, avelz;
 	public float throttle;
+	public boolean boosting;
 	public float fuelInTank;
 	public float steeringYaw;
 	public float recoilPos;
@@ -55,6 +56,7 @@ public class PacketDriveableControl extends PacketBase
 		avely = driveable.angularVelocity.y;
 		avelz = driveable.angularVelocity.z;
 		throttle = driveable.throttle;
+		boosting = driveable.isBoosting;
 		fuelInTank = driveable.driveableData.fuelInTank;
 		recoilPos = driveable.recoilPos;
 		lastRecoilPos = driveable.lastRecoilPos;
@@ -98,6 +100,7 @@ public class PacketDriveableControl extends PacketBase
     	data.writeFloat(avely);
     	data.writeFloat(avelz);
     	data.writeFloat(throttle);
+    	data.writeBoolean(boosting);
     	data.writeFloat(fuelInTank);
     	data.writeFloat(steeringYaw);
     	data.writeFloat(recoilPos);
@@ -136,6 +139,7 @@ public class PacketDriveableControl extends PacketBase
 		avely = data.readFloat();
 		avelz = data.readFloat();
 		throttle = data.readFloat();
+		boosting = data.readBoolean();
 		fuelInTank = data.readFloat();
 		steeringYaw = data.readFloat();
 		recoilPos = data.readFloat();
@@ -185,6 +189,7 @@ public class PacketDriveableControl extends PacketBase
 		//plane.setRotorPosition(rotorAngle, prevRotorAngle);
 		driveable.rotorAngle = rotorAngle;
 		driveable.prevRotorAngle = prevRotorAngle;
+		driveable.isBoosting = boosting;
 		if(driveable instanceof EntityPlane)
 		{
 			EntityPlane plane = (EntityPlane)driveable;

@@ -55,6 +55,7 @@ public class DriveableType extends InfoType
 	public Vector3f harvestBoxSize = new Vector3f(0,0,0);
 	public Vector3f harvestBoxPos = new Vector3f(0,0,0);
 
+	/** How much fall damage the driveable takes */
 	public float fallDamageFactor = 1.0F;
 
 	//Weapon variables
@@ -161,6 +162,22 @@ public class DriveableType extends InfoType
 	public float subSubmergingSpeed = 1F;
 	/** Sets a limit to the sub's surface floating height, so it doesn't float on top of the water. */
 	public float maxSubFloatHeight = 0F;
+	
+
+	//Boost variables - works only for vehicles
+	/** Toggle for turbo boost feature */
+	public boolean canBoost = false;
+	/** The minimum amount of time (in ticks) a vehicle will be boosting for, when a boost is activated. */
+	public double boostMinTime = 10;
+	/** How strong the boost is, additive to the throttle level.  A value of 0.5 would result in an effective throttle of 150 when boosting at full throttle. */
+	public float boostPower = 0.5F;
+	/** How long a boost can be sustained for before the boost gauge is exhausted, in seconds. */
+	public float boostDrain = 1.5F;
+	/** How long it takes for boost gauge to fully recharge from 0%, in seconds. */
+	public float boostRecharge = 4.5F;
+	/** The threshold at which boosting will be re-enabled if the boost gauge is exhausted. */
+	public float boostEnableThreshold = 0.8F;
+	
 
 	/** The radius within which to check for bullets */
 	public float bulletDetectionRadius = 5F;
@@ -415,6 +432,20 @@ public class DriveableType extends InfoType
 
 			else if(split[0].equals("CanMountEntity"))
 				canMountEntity = Boolean.parseBoolean(split[1]);
+
+            //Boosting
+			else if(split[0].equals("CanBoost") || split[0].equals("NitroBoost") || split[0].equals("HasTurboBoost"))
+				canBoost = Boolean.parseBoolean(split[1]);
+			else if(split[0].equals("BoostPower"))
+				boostPower = Float.parseFloat(split[1]);
+			else if(split[0].equals("BoostMinDuration"))
+				boostMinTime = Math.max(Double.parseDouble(split[1]),3);
+			else if(split[0].equals("BoostMaxDuration"))
+				boostDrain = Float.parseFloat(split[1]);
+			else if(split[0].equals("BoostRechargeTime"))
+				boostRecharge = Float.parseFloat(split[1]);
+			else if(split[0].equals("BoostReactivateThreshold"))
+				boostEnableThreshold = Float.parseFloat(split[1]);
 
             //Wheels
 			else if(split[0].equals("Wheel") || split[0].equals("WheelPosition"))

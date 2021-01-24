@@ -5,6 +5,7 @@ import java.util.Random;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
 
 import com.flansmod.client.ClientProxy;
 import com.flansmod.client.model.GunAnimations;
@@ -43,6 +45,7 @@ public class GuiGunModTable extends GuiContainer
     	fontRendererObj.drawString("Inventory", 8, (ySize - 94) + 2, 0x404040);
     	fontRendererObj.drawString("Gun Modification Table", 8, 6, 0x404040);
        	
+		//If a gun is in the table, display its 3D model.
         ItemStack gunStack = inventorySlots.getSlot(0).getStack();
         if(gunStack != null && gunStack.getItem() instanceof ItemGun)
         {
@@ -50,13 +53,16 @@ public class GuiGunModTable extends GuiContainer
         	if(gunType.model != null)
         	{
         		GL11.glPushMatrix();
-        		GL11.glColor3f(1F, 1F, 1F);
-        		GL11.glTranslatef(110, 54, 100);
-        		
-        		GL11.glRotatef(160, 1F, 0F, 0F);
-        		GL11.glRotatef(20, 0F, 1F, 0F);
-        		GL11.glScalef(-50F, 50F, 50F);
-        		ClientProxy.gunRenderer.renderGun(gunStack, gunType, 1F / 16F, gunType.model, GunAnimations.defaults, 0F);
+				{
+					GL11.glColor3f(1F, 1F, 1F);
+					GL11.glTranslatef(110, 54, 100);
+					
+					GL11.glRotatef(160, 1F, 0F, 0F);
+					GL11.glRotatef(20, 0F, 1F, 0F);
+					GL11.glScalef(-50F, 50F, 50F);
+					RenderHelper.enableStandardItemLighting();
+					ClientProxy.gunRenderer.renderGun(gunStack, gunType, 1F / 16F, gunType.model, GunAnimations.defaults, 0F, IItemRenderer.ItemRenderType.ENTITY);
+				}
         		GL11.glPopMatrix();
         	}
         }
@@ -103,7 +109,7 @@ public class GuiGunModTable extends GuiContainer
         	}
         	if(gunType.allowGadgetAttachments)
         	{
-        		drawTexturedModalRect(xOrigin + 51, yOrigin + 107, 176, 96, 22, 22);
+        		drawTexturedModalRect(xOrigin + 51, yOrigin + 133, 176, 96, 22, 22);
         		inventorySlots.getSlot(5).yDisplayPosition = 136;
         	}
         	
@@ -119,6 +125,7 @@ public class GuiGunModTable extends GuiContainer
         		}
         	}
         	
+			//Get the number of paintjobs
         	int numPaintjobs = gunType.paintjobs.size();
         	int numRows = numPaintjobs / 2 + 1;
         	
@@ -133,7 +140,8 @@ public class GuiGunModTable extends GuiContainer
             		drawTexturedModalRect(xOrigin + 131 + 18 * x, yOrigin + 82 + 18 * y, 178, 54, 18, 18);
             	}
             }
-        	
+			
+        	//Display paintjob slots
             for(int y = 0; y < numRows; y++)
             {
             	for(int x = 0; x < 2; x++)
@@ -158,17 +166,20 @@ public class GuiGunModTable extends GuiContainer
         	
         	//Get the paintjob name
 			String paintjobName = hoveringOver.paintjobName;
+			
+			if (paintjobName.equals("<default>"))
+			paintjobName = "Default";
 	        
 			if(!paintjobName.equals("null"))
 			{
 				GL11.glColor4f(1F, 1F, 1F, 1F);
 	        	GL11.glDisable(GL11.GL_LIGHTING);
+	        	
+	        	int stringLength = mc.fontRenderer.getStringWidth(paintjobName);
 				
+	        	drawRect(originX - Math.round(stringLength/2) - 1, originY + 1, originX + Math.round(stringLength/2) + 2, originY + 2 + 10, 0x54000000);
 				
-				if (!paintjobName.equals("<default>"))
 				drawCenteredString(fontrenderer, paintjobName, originX + 0, originY + 3, 0xffffff);
-				else
-				drawCenteredString(fontrenderer, "Default", originX + 0, originY + 3, 0xffffff);
 			}
 			
 			int numDyes = hoveringOver.dyesNeeded.length;

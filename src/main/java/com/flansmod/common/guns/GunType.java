@@ -134,6 +134,8 @@ public class GunType extends InfoType implements IScope
 	/**For bolt-action rifles: the offset of the bolt tilt.  Unused by default*/
 	public float boltCenterOffset = 0.0F;
 	
+	public boolean moveSlideOnPump = false;
+	
 	/**The sprinting animation type*/
 	public EnumSprintHoldType sprintAnim = EnumSprintHoldType.SIMPLE;
 	
@@ -735,6 +737,9 @@ public class GunType extends InfoType implements IScope
 				boltTiltSpeed = Float.parseFloat(split[1]);
 			else if(split[0].equals("BoltCenterOffset"))
 				boltCenterOffset = Float.parseFloat(split[1]);
+			
+			else if(split[0].equals("MoveSlideOnPump"))
+				moveSlideOnPump = Boolean.parseBoolean(split[1]);
 			
 			else if(split[0].equals("ScopedYOffset"))
 				scopedYOffset = Float.parseFloat(split[1]);

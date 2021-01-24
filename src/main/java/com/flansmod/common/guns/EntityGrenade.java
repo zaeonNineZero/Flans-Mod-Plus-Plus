@@ -553,7 +553,7 @@ public class EntityGrenade extends EntityShootable implements IEntityAdditionalS
 		detonated = true;
 
 		//Play detonate sound
-		worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.detonateSound, Math.max(type.detonateSoundRange/16F,0.5F), (float) ((Math.random()*0.1F)+0.9F));
+		worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.detonateSound, Math.max(type.detonateSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.95F));
 		//PacketPlaySound.sendSoundPacket(posX, posY, posZ, FlansMod.soundRange, dimension, type.detonateSound, true);
 
 		//Explode

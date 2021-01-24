@@ -29,6 +29,7 @@ public class ContainerGunModTable extends Container
 		addSlotToContainer(new SlotGun(inventory, 2, 80, 84, gunSlot));
 		addSlotToContainer(new SlotGun(inventory, 3, 106, 110, gunSlot));
 		addSlotToContainer(new SlotGun(inventory, 4, 80, 136, gunSlot));
+		addSlotToContainer(new SlotGun(inventory, 5, 54, 136, gunSlot));
 		
 		for(int row = 0; row < 4; row++)
 		{

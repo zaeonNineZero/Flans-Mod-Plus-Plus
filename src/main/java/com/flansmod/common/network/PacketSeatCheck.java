@@ -49,7 +49,7 @@ public class PacketSeatCheck extends PacketBase
 	@Override
 	public void handleServerSide(EntityPlayerMP playerEntity) 
 	{
-		log("handleServerSide", playerEntity);
+		//log("handleServerSide", playerEntity);
 		
 		if(checkCount <= 0)
 		{
@@ -97,7 +97,7 @@ public class PacketSeatCheck extends PacketBase
 	@SideOnly(Side.CLIENT)
 	public void handleClientSide(EntityPlayer clientPlayer) 
 	{
-		log("handleClientSide", clientPlayer);
+		//log("handleClientSide", clientPlayer);
 		
 		if(clientPlayer.ridingEntity==null && entityId != -1)
 		{

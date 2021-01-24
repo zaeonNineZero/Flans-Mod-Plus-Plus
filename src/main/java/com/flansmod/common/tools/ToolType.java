@@ -24,7 +24,7 @@ public class ToolType extends InfoType
 	public ModelBase model;
 	
 	/** Boolean switches that decide whether the tool should heal players and / or driveables */
-	public boolean healPlayers = false, healDriveables = false;
+	public boolean healPlayers = false, healDriveables = false, canHealOthers = true;
 	/** The amount to heal per use (one use per click) */
 	public int healAmount = 0;
 	/** The amount of uses the tool has. 0 means infinite */
@@ -40,8 +40,11 @@ public class ToolType extends InfoType
 	/** If true, then this will detonate the least recently placed remote explosive */
 	public boolean remote = false;
 	/** If > 0, then the player can eat this and recover this much hunger */
-	public int foodness = 0;
+	//public int foodness = 0;
 	public boolean key = false;
+	
+	public String healSound;
+	public boolean healSoundEnable = false;
 	
 	/** The max distance of the flak particles; this one is a static compatibility instance */
 	public float flakDistance = 1F;
@@ -76,6 +79,8 @@ public class ToolType extends InfoType
 				key = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("Heal") || split[0].equals("HealPlayers"))
 				healPlayers = Boolean.parseBoolean(split[1].toLowerCase());
+			else if(split[0].equals("CanHealOthers"))
+				canHealOthers = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("Repair") || split[0].equals("RepairVehicles"))
 				healDriveables = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("HealAmount") || split[0].equals("RepairAmount"))
@@ -97,8 +102,15 @@ public class ToolType extends InfoType
 			}
 			else if(split[0].equals("DestroyOnEmpty"))
 				destroyOnEmpty = Boolean.parseBoolean(split[1].toLowerCase());
-			else if(split[0].equals("Food") || split[0].equals("Foodness"))
-				foodness = Integer.parseInt(split[1]);
+			//else if(split[0].equals("Food") || split[0].equals("Foodness"))
+				//foodness = Integer.parseInt(split[1]);
+			
+			else if(split[0].equals("HealSound"))
+			{
+				healSoundEnable = true;
+				healSound = split[1];
+				FlansMod.proxy.loadSound(contentPack, "sound", split[1]);
+			}
 		} 
 		catch (Exception e)
 		{

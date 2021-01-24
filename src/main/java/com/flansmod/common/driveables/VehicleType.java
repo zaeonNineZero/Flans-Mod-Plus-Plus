@@ -21,17 +21,28 @@ public class VehicleType extends DriveableType
 	public boolean rotateWheels = false;
 	/** Tank movement system. Uses track collision box for thrust, rather than the wheels */
 	public boolean tank = false;
-	/** The traction modifier of the vehicle.  Higher tractions means less drifting when steering */
+	/** The traction modifier of the vehicle.  Higher tractions means less general sliding when steering */
 	public float traction = 15F;
-	/** The throttle level at which vehicles begin to loose traction and start drifting when turning */
-	public float driftSpeed = 0.7F;
-	/** The multiplier of how much traction is lost when the throttle is above driftSpeed */
-	public float driftTraction = 1.0F;
 	
-	/** How fast the vehicle throttles up outside Cruise Mode */
+	/** The throttle level at which vehicles will not turn any tighter */
+	public float maxTurningThrottle = 0.34F;
+	/** How much the camera rotates away from the vehicle's yaw point when steering */
+	public float cameraTurnMultiplier = 1F;
+	/** The throttle level at which vehicles can start drifting when turning and braking */
+	public float driftSpeed = 0.5F;
+	/** The multiplier of how much the vehicle try to straighten out when drifting */
+	public float driftTraction = 1.0F;
+	/** The multiplier of how much tighter the vehicle can turn when drifting */
+	public float driftSteering = 1.2F;
+	
+	/** How fast the vehicle throttles up; ignored when Cruise Control is active */
 	public float acceleration = 1F;
-	/** How fast the vehicle throttles down outside Cruise Mode */
+	/** How fast the vehicle throttles down; ignored when Cruise Control is active */
 	public float deceleration = 1F;
+	/** How fast the vehicle's throttle decays back to zero when Cruise Control is off */
+	public float throttleDecayRate = 1F;
+	/** How fast the vehicle's throttle decays back to zero when Cruise Control is off */
+	public float brakePower = 1F;
 
 	/** Shoot delays */
 	public int vehicleShootDelay, vehicleShellDelay;
@@ -77,6 +88,15 @@ public class VehicleType extends DriveableType
 		try
 		{
 			//Movement modifiers
+			if(split[0].equals("Acceleration"))
+				acceleration = Float.parseFloat(split[1]);
+			if(split[0].equals("Deceleration"))
+				deceleration = Float.parseFloat(split[1]);
+			if(split[0].equals("ThrottleDecayMultiplier") || split[0].equals("ThrottleDecayRate"))
+				throttleDecayRate = Float.parseFloat(split[1]);
+			if(split[0].equals("CameraTurnMultiplier"))
+				cameraTurnMultiplier = Float.parseFloat(split[1]);
+				
 			if(split[0].equals("TurnLeftSpeed"))
 				turnLeftModifier = Float.parseFloat(split[1]);
 			if(split[0].equals("TurnRightSpeed"))
@@ -89,10 +109,22 @@ public class VehicleType extends DriveableType
             	tank = Boolean.parseBoolean(split[1].toLowerCase());
 			if(split[0].equals("Traction"))
 				traction = Float.parseFloat(split[1]);
+			if(split[0].equals("TurnThrottleLimit"))
+			{
+				maxTurningThrottle = Float.parseFloat(split[1]);
+				if (maxTurningThrottle<0.01F)
+				maxTurningThrottle=0.01F;
+			}
 			if(split[0].equals("DriftSpeedThreshold"))
+			{
 				driftSpeed = Float.parseFloat(split[1]);
-			if(split[0].equals("DriftTractionLoss"))
+				if (driftSpeed<0.01F)
+				driftSpeed=0.01F;
+			}
+			if(split[0].equals("DriftTractionMultiplier"))
 				driftTraction = Float.parseFloat(split[1]);
+			if(split[0].equals("DriftSteeringMultiplier"))
+				driftSteering = Float.parseFloat(split[1]);
 
             //Visuals
             if(split[0].equals("HasDoor"))

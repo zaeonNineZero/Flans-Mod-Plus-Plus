@@ -85,6 +85,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 	public static Random bulletRandom = new Random();
 	/** Stop repeat detonations */
 	public boolean detonated = false;
+	public boolean despawned = false;
 	
 	/** For homing missiles */
 	public Entity lockedOnTo;
@@ -294,6 +295,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 		if(type.despawnTime > 0 && ticksExisted > type.despawnTime)
 		{
 			detonated = true;
+			despawned = true;
 			setDead();
 			return;
 		}
@@ -556,12 +558,16 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 			{
 				if(bulletHit instanceof DriveableHit)
 				{
-					if(type.entityHitSoundEnable)
-						PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.hitSoundRange, dimension, type.hitSound, true);
+					if(type.entityHitSoundEnable && !worldObj.isRemote)
+						worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.hitSound, Math.max(type.hitSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.95F));
+						//PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.hitSoundRange, dimension, type.hitSound, true);
 					if(worldObj.isRemote){
 						if(owner instanceof EntityPlayer){
 							if(FlansMod.proxy.isThePlayer((EntityPlayer)owner)){
 							    	hitCrossHair = true;
+									//Hitmarker Sound
+									if(type.hitMarkerSoundEnable)
+									PacketPlaySound.sendSoundPacket(posX, posY, posZ, 1000F, dimension, type.hitMarkerSound, true);
 							}
 						}
 					}
@@ -580,12 +586,16 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 				}
 				else if(bulletHit instanceof PlayerBulletHit)
 				{
-					if(type.entityHitSoundEnable)
-						PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.hitSoundRange, dimension, type.hitSound, true);
+					if(type.entityHitSoundEnable && !worldObj.isRemote)
+						worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.hitSound, Math.max(type.hitSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.95F));
+						//PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.hitSoundRange, dimension, type.hitSound, true);
 					if(worldObj.isRemote){
 						if(owner instanceof EntityPlayer){
 							if(FlansMod.proxy.isThePlayer((EntityPlayer)owner)){
 							    	hitCrossHair = true;
+									//Hitmarker Sound
+									if(type.hitMarkerSoundEnable)
+									PacketPlaySound.sendSoundPacket(posX, posY, posZ, 1000F, dimension, type.hitMarkerSound, true);
 							}
 						}
 					}
@@ -596,12 +606,16 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 				}
 				else if(bulletHit instanceof EntityHit)
 				{
-					if(type.entityHitSoundEnable)
-						PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.hitSoundRange, dimension, type.hitSound, true);
+					if(type.entityHitSoundEnable && !worldObj.isRemote)
+						worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.hitSound, Math.max(type.hitSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.95F));
+						//PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.hitSoundRange, dimension, type.hitSound, true);
 					if(worldObj.isRemote){
 						if(owner instanceof EntityPlayer){
 							if(FlansMod.proxy.isThePlayer((EntityPlayer)owner)){
 							    	hitCrossHair = true;
+									//Hitmarker Sound
+									if(type.hitMarkerSoundEnable)
+									PacketPlaySound.sendSoundPacket(posX, posY, posZ, 1000F, dimension, type.hitMarkerSound, true);
 							}
 						}
 					}
@@ -754,11 +768,16 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 
 					//penetratingPower -= block.getBlockHardness(worldObj, zTile, zTile, zTile);
 					setPosition(hit.hitVec.xCoord, hit.hitVec.yCoord, hit.hitVec.zCoord);
-					//play sound when bullet hits block
-					if(type.hitSoundEnable && !type.impactSoundEnable)
-					worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.hitSound, Math.max(type.hitSoundRange/16F,0.5F), (float) ((Math.random()*0.1F)+0.9F));
-					if(type.impactSoundEnable)
-					worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.impactSound, Math.max(type.impactSoundRange/16F,0.5F), (float) ((Math.random()*0.1F)+0.9F));
+					
+					//Play a sound when bullet hits a block
+					//if(!type.longRangeHitSound)
+					//{
+						if(type.hitSoundEnable && !type.impactSoundEnable)
+							worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.hitSound, Math.max(type.hitSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.9F));
+						if(type.impactSoundEnable)
+							worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.impactSound, Math.max(type.impactSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.9F));
+					//}
+					
 					
 					setDead();
 					break;
@@ -1106,7 +1125,11 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 
 //			FlansMod.log("EntityBullet.setDead() "+type.shortName + " : "+this);
 
-			if(type.explosionRadius > 0)
+			//Play detonate sound
+			if(type.explodeOnImpact && type.detonateSound != "")
+			worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.detonateSound, Math.max(type.detonateSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.95F));
+
+			if(type.explosionRadius > 0 && !despawned)
 			{
 		        if(owner instanceof EntityPlayer)
 				{
@@ -1119,7 +1142,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 					worldObj.createExplosion(this, posX, posY, posZ, type.explosionRadius, TeamsManager.explosions);
 				}
 			}
-			if(type.fireRadius > 0)
+			if(type.fireRadius > 0 && !despawned)
 			{
 				for(float i = -type.fireRadius; i < type.fireRadius; i++)
 				{
@@ -1136,7 +1159,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 				}
 			}
 			//Send flak packet
-			if(type.flak > 0)
+			if(type.flak > 0 && !despawned)
 				FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(posX, posY, posZ, type.flak, type.flakParticles, type.flakDistance), posX, posY, posZ, 200, dimension);
 			// Drop item on hitting if bullet requires it
 			if (type.dropItemOnHit != null)
@@ -1180,7 +1203,9 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 		detonated = true;
 
 		//Play detonate sound
-		PacketPlaySound.sendSoundPacket(posX, posY, posZ, FlansMod.soundRange, dimension, type.detonateSound, true);
+		if(type.detonateSound != "")
+		worldObj.playSoundEffect(posX, posY, posZ, "flansmod:" + type.detonateSound, Math.max(type.detonateSoundRange/15F,0.5F), (float) ((Math.random()*0.1F)+0.95F));
+		//PacketPlaySound.sendSoundPacket(posX, posY, posZ, FlansMod.soundRange, dimension, type.detonateSound, true);
 
 		//Explode
 		if(!worldObj.isRemote && type.explosionRadius > 0.1F)

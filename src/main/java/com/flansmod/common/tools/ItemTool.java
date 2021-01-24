@@ -103,10 +103,10 @@ public class ItemTool extends Item
 	@Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
     {
-		if(type.foodness > 0)
-			super.onItemRightClick(itemstack, world, entityplayer);
+		//if(type.foodness > 0)
+			//super.onItemRightClick(itemstack, world, entityplayer);
 		
-		else if(type.parachute)
+		/*else*/ if(type.parachute)
 		{
 			if(EntityParachute.canUseParachute(entityplayer))
 			{
@@ -201,7 +201,7 @@ public class ItemTool extends Item
 								//Heal it
 								part.health += type.healAmount;
 								//Particles!
-								FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(part.box.x + (part.box.w/2), part.box.y + (part.box.h/2), part.box.z + (part.box.d/2), 5, "magicCrit", 1.5F), new NetworkRegistry.TargetPoint(user.dimension, part.box.x, part.box.y, part.box.z, 50F));
+								FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(part.box.x + (part.box.w/2), part.box.y + (part.box.h/2), part.box.z + (part.box.d/2), 5, "magicCrit", 1.5F), new NetworkRegistry.TargetPoint(user.dimension, part.box.x + (part.box.w/2), part.box.y + (part.box.h/2), part.box.z + (part.box.d/2), 50F));
 								//If it is over full health, cap it
 								if(part.health > part.maxHealth)
 									part.health = part.maxHealth;
@@ -211,7 +211,9 @@ public class ItemTool extends Item
 								//Swing the item
 								user.swingItem();
 								//Sound effects!
+								world.playSoundEffect(user.posX, user.posY, user.posZ, "flansmod:vehiclerepair", 0.7F, (float) ((Math.random()*0.2F)+0.9F));
 								//PacketPlaySound.sendSoundPacket(part.box.x, part.box.y, part.box.z, 16F, user.dimension, "vehiclerepair", false);
+								
 								//If the tool is damagable and is destroyed upon being used up, then destroy it
 								if(type.toolLife > 0 && type.destroyOnEmpty && itemstack.getItemDamage() == itemstack.getMaxDamage())
 									itemstack.stackSize--;
@@ -242,7 +244,7 @@ public class ItemTool extends Item
 					//Do a more accurate ray trace on this entity
 					MovingObjectPosition hit = checkEntity.boundingBox.calculateIntercept(posVec, lookVec);
 					//If it hit, heal it
-					if (hit != null)
+					if (hit != null && type.canHealOthers)
 						hitLiving = checkEntity;
 				}
 		        //Now heal whatever it was we just decided to heal
@@ -254,6 +256,9 @@ public class ItemTool extends Item
 		        	
 		        	hitLiving.heal(type.healAmount);
 		        	FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(hitLiving.posX, hitLiving.posY + 1, hitLiving.posZ, 5, "heart", 1.5F), new NetworkRegistry.TargetPoint(hitLiving.dimension, hitLiving.posX, hitLiving.posY + 1, hitLiving.posZ, 50F));
+					//Sound effects!
+					world.playSoundEffect(entityplayer.posX, entityplayer.posY, entityplayer.posZ, "flansmod:" + type.healSound, 0.5F, (float) ((Math.random()*0.2F)+0.9F));
+					//PacketPlaySound.sendSoundPacket(part.box.x, part.box.y, part.box.z, 16F, user.dimension, "vehiclerepair", false);
 		        	
 					//If not in creative and the tool should decay, damage it
 					if(!entityplayer.capabilities.isCreativeMode && type.toolLife > 0)

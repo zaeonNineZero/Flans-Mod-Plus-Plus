@@ -3,8 +3,12 @@
     "category": "player",
     "sounds": [ "flansmod:vehiclerepair" ]
 	},
-	"vehicledamage": {
+	"vehiclehit": {
     "category": "player",
-    "sounds": [ "flansmod:vehicledamage" ]
+    "sounds": [ "flansmod:vehiclehit" ]
+	},
+	"vehicleboost": {
+    "category": "player",
+    "sounds": [ "flansmod:vehicleboost" ]
 	}
 }

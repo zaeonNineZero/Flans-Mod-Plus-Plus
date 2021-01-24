@@ -316,8 +316,19 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
 			vehicle = (EntityVehicle) driveable;
 			VehicleType vtype = vehicle.getVehicleType();
 			
+			float steer = vehicle.wheelsYaw;
+			
+			if (vehicle.isDrifting)
+			{
+			if (vehicle.driftSlide>0)
+				steer = Math.max(vehicle.wheelsYaw+(vehicle.driftSlide/6F),vehicle.driftSlide/3F);
+			else
+			if (vehicle.driftSlide<0)
+				steer = Math.min(vehicle.wheelsYaw+(vehicle.driftSlide/6F),vehicle.driftSlide/3F);
+			}
+			
 			if (hasgun == null && driver)
-				steerYaw = -(vehicle.wheelsYaw * Math.max(Math.min(driveable.adjustThrottle*1.5F,1),0))*2.5F * (vehicle.wheelsYaw > 0 ? vtype.turnLeftModifier : vtype.turnRightModifier);
+				steerYaw = -(steer * Math.max(Math.min(vehicle.throttleCalc*1.5F,1),-1))*2.5F * (vehicle.wheelsYaw > 0 ? vtype.turnLeftModifier*(vtype.cameraTurnMultiplier*1.2F) : vtype.turnRightModifier*(vtype.cameraTurnMultiplier*1.2F));
 			else
 				steerYaw = 0F;
             }

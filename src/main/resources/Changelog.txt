@@ -2,16 +2,29 @@
 	CHANGELOG
 
 
-[Version 1.0.3]
+[Version 1.1.0]
 * Added preliminary support for Gadget attachments (Implemented separately from FMU:SE's version)
 	- Intended for rail-mounted laser sights or flashlights
+* Added preliminary support for multi-stance Grip attachment models, such as Bipods.
 * Added a simple render mode for the gun ammo HUD, which only displays the amount of shots left.
 * Simplified the ammo remaining tooltip for guns to show how many shots are remaining.
 	- Hold shift to view details on loaded ammo items and how many shots each item has left.
 * Added a per-gun option to show remaining shots as "uses" in the item tooltip.
 * Added a remaining shots tooltip for bullet/ammo items, with new per-item config lines to control how it is displayed.
+* Added paintjob name tooltips for named weapon paintjobs in the Gun Modification Table.
+
+* Added a speed readout to the vehicle/plane HUD, and moved the plane HUD's heading readout to the top-center of the screen.
 
 * Added lines for controlling the throttle threshold at which vehicles will switch from their starting sounds to their driving/backing sounds. 
+* Adjusted vehicle handling to allow for better drifting and steering behavior.
+	- "TurnThrottleLimit" sets the throttle level at which point a vehicle will not turn any tighter.
+	- Fully fledged drifting behavior.  Drifting is triggered by tapping the brakes will turning.
+	- Drifting too tightly will cause a vehicle to lose speed.
+* Added a boosting ability, which can be activated using the line "CanBoost True"
+	- Tap the Pitch Down key to boost.  Boost drains from a power meter when active, and the meter refills overtime.
+
+* Fixed a collision bug that could cause planes to teleport down to Brazil (read: bedrock level) when colliding with land vehicles.
+	- This fixed uses ported code from Flan's Mod Ultimate: Stability Edition.  Thanks GoldSloth!
 
 
 

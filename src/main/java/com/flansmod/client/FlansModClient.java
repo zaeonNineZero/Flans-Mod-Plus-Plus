@@ -118,6 +118,8 @@ public class FlansModClient extends FlansMod
 	/** The transition variable for the sprint animation. 0 = normal, 1 = sprinting */
 	public static float sprintProgress = 0F, lastSprintProgress = 0F;
 	
+	//public static boolean crouched = false;
+	
 	//Crosshair stuff
 	/** Whether to show the crosshair while unscoped with the current gun */
 	public static boolean crosshairUnscoped = true;
@@ -376,6 +378,13 @@ public class FlansModClient extends FlansMod
 		{
 			sprintProgress *= 0.35F;
 		}
+		
+		
+		//Sneaking check
+		/*if(minecraft.thePlayer.isSneaking())
+		crouched = true;
+		else
+		crouched = false;*/
 		
 		
 		//Scope Animation Handling

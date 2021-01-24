@@ -54,10 +54,14 @@ public class BulletType extends ShootableType
 	public float hitSoundRange = 16F;
 	public boolean hitSoundEnable = false;
 	public boolean entityHitSoundEnable = false;
+	public boolean longRangeHitSound = false;
 	
 	public String impactSound;
 	public float impactSoundRange = 8F;
 	public boolean impactSoundEnable = false;
+	
+	public String hitMarkerSound;
+	public boolean hitMarkerSoundEnable = false;
 
 	public boolean hasLight = false;
 	public float penetratingPower = 1F;
@@ -147,6 +151,8 @@ public class BulletType extends ShootableType
 				hitSoundEnable = Boolean.parseBoolean(split[1]);
 			else if(split[0].equals("EntityHitSoundEnable"))
 				entityHitSoundEnable = Boolean.parseBoolean(split[1]);
+			/*else if(split[0].equals("LongRangeHitSound"))
+				longRangeHitSound = Boolean.parseBoolean(split[1]);*/
 			else if(split[0].equals("HitSound"))
 			{
 				hitSound = split[1];
@@ -154,6 +160,21 @@ public class BulletType extends ShootableType
 			}
 			else if(split[0].equals("HitSoundRange"))
 				hitSoundRange = Float.parseFloat(split[1]);
+			else if(split[0].equals("ImpactSound"))
+			{
+				impactSoundEnable = true;
+				impactSound = split[1];
+				FlansMod.proxy.loadSound(contentPack, "sound", split[1]);
+			}
+			else if(split[0].equals("ImpactSoundRange"))
+				impactSoundRange = Float.parseFloat(split[1]);
+			else if(split[0].equals("HitMarkerSound"))
+			{
+				hitMarkerSoundEnable = true;
+				hitMarkerSound = split[1];
+				FlansMod.proxy.loadSound(contentPack, "sound", split[1]);
+			}
+			
 			else if(split[0].equals("Penetrates"))
 				penetratingPower = (Boolean.parseBoolean(split[1].toLowerCase()) ? 1F : 0.25F);
 			else if(split[0].equals("Penetration") || split[0].equals("PenetratingPower"))

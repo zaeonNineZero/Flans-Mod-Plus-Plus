@@ -3,6 +3,7 @@ package com.flansmod.client.model;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,6 +15,7 @@ import net.minecraftforge.client.IItemRenderer;
 
 import com.flansmod.client.FlansModClient;
 import com.flansmod.client.FlansModResourceHandler;
+import com.flansmod.common.FlansMod;
 import com.flansmod.common.PlayerData;
 import com.flansmod.common.PlayerHandler;
 import com.flansmod.common.guns.AttachmentType;
@@ -516,7 +518,7 @@ public class RenderGun implements IItemRenderer
 				default : break;
 			}
 			
-			renderGun(item, gunType, f, model, animations, reloadRotate);
+			renderGun(item, gunType, f, model, animations, reloadRotate, type);
 		}
 		GL11.glPopMatrix();
 		
@@ -524,8 +526,9 @@ public class RenderGun implements IItemRenderer
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	/** Gun render method, seperated from transforms so that mecha renderer may also call this */
-	public void renderGun(ItemStack item, GunType type, float f, ModelGun model, GunAnimations animations, float reloadRotate)
+	/** Gun render method, seperated from transforms so that mecha renderer may also call this 
+	 * @param entity */
+	public void renderGun(ItemStack item, GunType type, float f, ModelGun model, GunAnimations animations, float reloadRotate, ItemRenderType rtype)
 	{
 		//Make sure we actually have the renderEngine
 		if(renderEngine == null)
@@ -557,6 +560,11 @@ public class RenderGun implements IItemRenderer
 		}
 				
 		//Load texture
+		/*if (rtype == ItemRenderType.EQUIPPED_FIRST_PERSON && model.hasArms && FlansMod.armsEnable)
+		{
+			Minecraft mc = Minecraft.getMinecraft();
+			renderFirstPersonArm(mc.thePlayer, model, animations);
+		}*/
 		renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.stackTagCompound.getString("Paint"))));
 		
 		
@@ -607,6 +615,8 @@ public class RenderGun implements IItemRenderer
 			model.renderGun(f);
 			if(scopeAttachment == null && !model.scopeIsOnSlide && !model.scopeIsOnBreakAction)
 				model.renderDefaultScope(f);
+			else if(scopeAttachment != null && !model.scopeIsOnSlide && !model.scopeIsOnBreakAction)
+				model.renderAddonScope(f);
 			if(barrelAttachment == null)
 				model.renderDefaultBarrel(f);
 			if(stockAttachment == null)
@@ -619,9 +629,15 @@ public class RenderGun implements IItemRenderer
 			GL11.glPushMatrix();
 			{
 				GL11.glTranslatef(-(animations.lastGunSlide + (animations.gunSlide - animations.lastGunSlide) * smoothing) * model.gunSlideDistance, 0F, 0F);
+				
+				if(model.moveSlideOnPump || type.moveSlideOnPump)
+					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * model.gunSlideDistance*0.95F, 0F, 0F);
+				
 				model.renderSlide(f);
 				if(scopeAttachment == null && model.scopeIsOnSlide)
 					model.renderDefaultScope(f);
+				else if(scopeAttachment != null && model.scopeIsOnSlide)
+					model.renderAddonScope(f);
 			}
 			GL11.glPopMatrix();
 			
@@ -634,6 +650,8 @@ public class RenderGun implements IItemRenderer
 				model.renderBreakAction(f);
 				if(scopeAttachment == null && model.scopeIsOnBreakAction)
 					model.renderDefaultScope(f);
+				else if(scopeAttachment != null && model.scopeIsOnBreakAction)
+					model.renderAddonScope(f);
 			}
 			GL11.glPopMatrix();
 			
@@ -878,6 +896,12 @@ public class RenderGun implements IItemRenderer
 						default : break;
 					}
 				}
+				
+				/*if (rtype == ItemRenderType.EQUIPPED_FIRST_PERSON && model.hasArms && FlansMod.armsEnable)
+				{
+					Minecraft mc = Minecraft.getMinecraft();
+					renderAnimArm(mc.thePlayer, model, type, animations);
+				}*/
 
 				if(shouldRender)
 					model.renderAmmo(f);
@@ -905,7 +929,12 @@ public class RenderGun implements IItemRenderer
 				GL11.glTranslatef(type.attachScopeXOffset * type.modelScale, type.attachScopeYOffset * type.modelScale, type.attachScopeZOffset * type.modelScale);
 
 				if(model.scopeIsOnSlide)
+				{
 					GL11.glTranslatef(-(animations.lastGunSlide + (animations.gunSlide - animations.lastGunSlide) * smoothing) * model.gunSlideDistance * type.modelScale, 0F, 0F);
+					
+					if(model.moveSlideOnPump || type.moveSlideOnPump)
+					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * (model.gunSlideDistance*0.95F) * type.modelScale, 0F, 0F);
+				}
 				GL11.glScalef(scopeAttachment.modelScale * type.attachScopeScale, scopeAttachment.modelScale * type.attachScopeScale, scopeAttachment.modelScale * type.attachScopeScale);
 				ModelAttachment scopeModel = scopeAttachment.model;
 				if(scopeModel != null)
@@ -931,7 +960,13 @@ public class RenderGun implements IItemRenderer
 				GL11.glScalef(gripAttachment.modelScale * type.attachGripScale, gripAttachment.modelScale * type.attachGripScale, gripAttachment.modelScale * type.attachGripScale);
 				ModelAttachment gripModel = gripAttachment.model;
 				if(gripModel != null)
+				{
+					//Bipod attachment mechanics
+					if(gripAttachment.bipod && ((ItemGun)item.getItem()).crouched)
+					gripModel.renderDeployedBipod(f);
+					else
 					gripModel.renderAttachment(f);
+				}
 				renderEngine.bindTexture(FlansModResourceHandler.getTexture(type));
 			}
 			GL11.glPopMatrix();
@@ -1016,4 +1051,7 @@ public class RenderGun implements IItemRenderer
 			GL11.glPopMatrix();
 		}
 	}
+	
+	
+	//Arm rendering code (Cleaning up)
 }

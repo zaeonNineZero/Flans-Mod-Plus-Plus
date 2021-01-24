@@ -501,12 +501,12 @@ public class TickHandlerClient
 					mc.fontRenderer.drawStringWithShadow("RF Capacity: " + fuelP + "%" , 2, 22, fuelColour);
 				else
 					mc.fontRenderer.drawStringWithShadow("Fuel Capacity: " + fuelP + "%" , 2, 22, fuelColour);
-				//mc.fontRenderer.drawStringWithShadow(String.format("Speed: %.2f", Math.sqrt(speed)), 2, 32, 0xffffff);
 				if(ent instanceof EntityPlane)
 				{
 					EntityDriveable entP = (EntityDriveable)ent;
-					//mc.fontRenderer.drawStringWithShadow(String.format("Yaw : %.0f%", ((EntitySeat)mc.thePlayer.ridingEntity).looking.getYaw()), 92, 2, 0xffffff);
-
+					double rawSpeed = (ent.getMotion("xyz")) * 2000;
+					double speed = (Math.round(rawSpeed));
+					
 					float rawPitch = (entP.axes.getPitch())*-10;
 					float rawRoll = (entP.axes.getRoll())*10;
 					
@@ -523,9 +523,11 @@ public class TickHandlerClient
 					
 					String mode = ((EntityPlane) entP).getCurrentFlightMode();
 					
-					mc.fontRenderer.drawStringWithShadow("Heading: " + (yaw/10) + " (" + heading + ")", 102, 2, 0xffffff);
-					mc.fontRenderer.drawStringWithShadow("Pitch: " + (pitch/10) + " (" + pitchD + ")", 102, 12, 0xffffff);
-					mc.fontRenderer.drawStringWithShadow("Roll: " + (roll/10) + " (" + rollD + ")", 102, 22, 0xffffff);
+					mc.fontRenderer.drawStringWithShadow("Heading: " + (yaw/10) + " (" + heading + ")", (i / 2) - 50, 2, 0xffffff);
+					mc.fontRenderer.drawStringWithShadow("Pitch: " + (pitch/10) + " (" + pitchD + ")", 116, 12, 0xffffff);
+					mc.fontRenderer.drawStringWithShadow("Roll: " + (roll/10) + " (" + rollD + ")", 116, 22, 0xffffff);
+
+					mc.fontRenderer.drawStringWithShadow("Speed: " + (speed/100) + " m/s" , 116, 2, 0xffffff);
 
 					if(((EntityPlane) entP).getPlaneType().mode == EnumPlaneMode.VTOL)
 					mc.fontRenderer.drawStringWithShadow((mode == "Plane" ? "Flight Mode" : "Hover Mode"), 2, 37, 0xffffff);
@@ -533,37 +535,53 @@ public class TickHandlerClient
 					if(entP.getDriveableType().hasFlare)
 					{
 						if(entP.ticksFlareUsing <= 0 && entP.flareDelay <= 0)
-							mc.fontRenderer.drawStringWithShadow("Flare: READY"  , 2, 32, 0x00ff00);
+							mc.fontRenderer.drawStringWithShadow("Flare: READY"  , 2, 47, 0x00ff00);
 	
 						if(entP.ticksFlareUsing > 0)
-							mc.fontRenderer.drawStringWithShadow("Flare: Deploying"  , 2, 42, 0xff0000);
+							mc.fontRenderer.drawStringWithShadow("Flare: Deploying"  , 2, 57, 0xff0000);
 	
 						if(entP.flareDelay > 0)
-							mc.fontRenderer.drawStringWithShadow("Flare: Reloading"  , 2, 52, 0xdaa520);
+							mc.fontRenderer.drawStringWithShadow("Flare: Reloading"  , 2, 67, 0xdaa520);
 					}
 				}
 				if(ent instanceof EntityVehicle)
 				{
 					EntityDriveable entP = (EntityDriveable)ent;
+					EntityVehicle entV = (EntityVehicle)entP;
+					
+					/*double rawThrottlePower = (ent.throttle * ent.getDriveableData().engine.engineSpeed * (ent.throttle >= 0 ? ent.getDriveableType().maxThrottle : ent.getDriveableType().maxNegativeThrottle))*983.334;
+					double throttlePower = (Math.round(rawThrottlePower));
+					mc.fontRenderer.drawStringWithShadow("Motor PWR: " + (throttlePower/100) + " (" + Math.round(ent.throttle*100) + "%)" , 2, 2, healthColour);*/
+					
+					double rawSpeed = (ent.getMotion("xz")) * 2000;
+					double speed = (Math.round(rawSpeed));
+					
+					mc.fontRenderer.drawStringWithShadow("Speed: " + (speed/100) + " m/s" , 116, 2, 0xffffff);
+					if (ent.getDriveableType().canBoost)
+					mc.fontRenderer.drawStringWithShadow("Boost Gauge: " + Math.round(entV.boostGauge) + "%" , 116, 12, (ent.isBoosting ? 0xffee00 : (entV.boostExhausted ? 0xdd2200 : 0xffffff)) );
+					
+					//if (FlansMod.DEBUG)
+					mc.fontRenderer.drawStringWithShadow("Drift: " + entV.displayDriftFactor, 116, 22, 0xdddddd);
+					
 					if(entP.getDriveableType().hasFlare)
 					{
 						if(entP.ticksFlareUsing <= 0 && entP.flareDelay <= 0)
-							mc.fontRenderer.drawStringWithShadow("Smoke: READY"  , 2, 32, 0x00ff00);
+							mc.fontRenderer.drawStringWithShadow("Smoke: READY"  , 2, 37, 0x00ff00);
 	
 						if(entP.ticksFlareUsing > 0)
-							mc.fontRenderer.drawStringWithShadow("Smoke: Deploying"  , 2, 42, 0xff0000);
+							mc.fontRenderer.drawStringWithShadow("Smoke: Deploying"  , 2, 47, 0xff0000);
 	
 						if(entP.flareDelay > 0)
-							mc.fontRenderer.drawStringWithShadow("Smoke: Reloading"  , 2, 52, 0xdaa520);
+							mc.fontRenderer.drawStringWithShadow("Smoke: Reloading"  , 2, 57, 0xdaa520);
 					}
 				}
 
 				if(FlansMod.DEBUG)
 				{
-					mc.fontRenderer.drawString("MotionX : " + ent.motionX, 2, 32, 0xffffff);
-					mc.fontRenderer.drawString("MotionY : " + ent.motionY, 2, 42, 0xffffff);
-					mc.fontRenderer.drawString("MotionZ : " + ent.motionZ, 2, 52, 0xffffff);
-					mc.fontRenderer.drawString("Break Blocks : " + TeamsManager.driveablesBreakBlocks, 2, 62, 0xffffff);
+					mc.fontRenderer.drawStringWithShadow("MotionX : " + ent.motionX, 2, 32, 0xdddddd);
+					mc.fontRenderer.drawStringWithShadow("MotionY : " + ent.motionY, 2, 42, 0xdddddd);
+					mc.fontRenderer.drawStringWithShadow("MotionZ : " + ent.motionZ, 2, 52, 0xdddddd);
+					mc.fontRenderer.drawStringWithShadow("Break Blocks : " + TeamsManager.driveablesBreakBlocks, 2, 62, 0xdddddd);
 				}
 			}
 	    }

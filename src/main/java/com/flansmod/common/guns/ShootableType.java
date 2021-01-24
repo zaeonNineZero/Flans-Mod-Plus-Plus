@@ -239,7 +239,12 @@ public class ShootableType extends InfoType
 			else if(split[0].equals("DropItemOnDetonate"))
 				dropItemOnDetonate = split[1];
 			else if(split[0].equals("DetonateSound"))
+			{
 				detonateSound = split[1];
+				FlansMod.proxy.loadSound(contentPack, "guns", split[1]);
+			}
+			else if(split[0].equals("DetonateSoundRange"))
+				detonateSoundRange = Float.parseFloat(split[1]);
 			
 			//Submunitions
 			else if(split[0].equals("HasSubmunitions"))
