@@ -28,12 +28,19 @@ public class VehicleType extends DriveableType
 	public float maxTurningThrottle = 0.34F;
 	/** How much the camera rotates away from the vehicle's yaw point when steering */
 	public float cameraTurnMultiplier = 1F;
+	
 	/** The throttle level at which vehicles can start drifting when turning and braking */
 	public float driftSpeed = 0.5F;
-	/** The multiplier of how much the vehicle try to straighten out when drifting */
-	public float driftTraction = 1.0F;
 	/** The multiplier of how much tighter the vehicle can turn when drifting */
 	public float driftSteering = 1.2F;
+	
+	/** The multiplier of how much control the vehicle has over drifting via steering */
+	public float driftControl = 1.0F;
+	/** The multiplier of how much the vehicle try to straighten out when drifting */
+	public float driftTraction = 1.0F;
+	
+	/** The maximum drift angle a vehicle can achieve */
+	public float driftCap = 90F;
 	
 	/** How fast the vehicle throttles up; ignored when Cruise Control is active */
 	public float acceleration = 1F;
@@ -121,10 +128,14 @@ public class VehicleType extends DriveableType
 				if (driftSpeed<0.01F)
 				driftSpeed=0.01F;
 			}
-			if(split[0].equals("DriftTractionMultiplier"))
-				driftTraction = Float.parseFloat(split[1]);
 			if(split[0].equals("DriftSteeringMultiplier"))
 				driftSteering = Float.parseFloat(split[1]);
+			if(split[0].equals("DriftControlMultiplier"))
+				driftControl = Float.parseFloat(split[1]);
+			if(split[0].equals("DriftTractionMultiplier"))
+				driftTraction = Float.parseFloat(split[1]);
+			if(split[0].equals("MaxDriftAngle"))
+				driftCap = Float.parseFloat(split[1]);
 
             //Visuals
             if(split[0].equals("HasDoor"))

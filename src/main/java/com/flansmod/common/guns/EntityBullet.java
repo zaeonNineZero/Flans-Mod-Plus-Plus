@@ -136,9 +136,13 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 		damage = gunDamage;
 		penetratingPower = type.penetratingPower;
 		setSize(bulletType.hitBoxSize, bulletType.hitBoxSize);
-		doKnockback = shot_doKnockback;
-		modifyKnockback = shot_modifyKnockback;
-		kbDampener = shot_kbDampener;
+		
+		doKnockback = bulletType.doKnockback;
+		modifyKnockback = bulletType.modifyKnockback;
+		kbDampener = bulletType.kbDampener;
+		//doKnockback = shot_doKnockback;
+		//modifyKnockback = shot_modifyKnockback;
+		//kbDampener = shot_kbDampener;
 	}
 
 	/** Method called by ItemGun for creating bullets from a hand held weapon */

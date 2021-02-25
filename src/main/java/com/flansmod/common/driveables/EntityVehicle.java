@@ -75,16 +75,15 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 	public float driftSteerForce = 0;
 	
 	public float finalTurnFactor = 0;
-	public float prevFinalTurn = 0;
 	
-	public float boostGauge = 100F;
+	public float boostGauge = 0F;
 	public double boostTimer = 0;
-	public boolean boostExhausted = false;
+	public boolean boostExhausted = true;
     
     public float yaw = 0;
     public float pitch = 0;
     public float roll = 0;
-    
+	
     public float yawSpeed = 0;
 	
 	public boolean isDrifting = false;
@@ -101,6 +100,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
     public boolean accelHeld = false;
     public boolean brakeHeld = false;
     public boolean allWheelsOnGround;
+    public int totalWheelsOnGround = 0;
     
     //Some nonsense
     boolean lockTurretForward = false;
@@ -241,7 +241,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			case 0 : //Accelerate : Increase the throttle, up to 1.
 			{
 				if (cruiseControl && hasEnoughFuel())
-				throttle += 0.01F;
+				throttle += 0.005F;
 				else
 				{
 				accelHeld = true;
@@ -261,7 +261,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			case 1 : //Decelerate : Decrease the throttle, down to -1, or 0 if the vehicle cannot reverse
 			{
 				if (cruiseControl && hasEnoughFuel())
-				throttle -= 0.01F;
+				throttle -= 0.005F;
 				else
 				if (hasEnoughFuel())
 				{
@@ -307,10 +307,10 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				}
 				brakeHeld = true;
 				
-				throttle -= (throttle > 0 ? 0.01F-(Math.abs(wheelsYaw)/3000) : -0.01F)*type.brakePower;
+				throttle -= ((throttle > 0 ? 0.01F-(Math.abs(wheelsYaw)/3000) : -0.01F)*type.brakePower)*0.7;
 				
 				//Additional braking power
-				throttle *= 0.95F+(0.05*(Math.min(Math.abs(wheelsYaw)/20,1)));
+				throttle *= 0.97F+(0.03*(Math.min(Math.abs(wheelsYaw)/20,1)));
 				
 				if(throttle < 0.02F*type.brakePower && throttle > -0.02F*type.brakePower)
 					throttle = 0F;
@@ -465,8 +465,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
         }
         
         boolean boostStarted = false;
-		
-		prevFinalTurn = finalTurnFactor;
+		boolean inWater = false;
         
 		
 		//Disable cruise control when the vehicle has no driver
@@ -501,7 +500,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			
 			
 			isBoosting = true;
-			boostGauge -= 100F/(20*type.boostDrain);
+			boostGauge -= 5F/(Math.max(type.boostDrain,0.01));
 			
 			if (boostGauge<=0)
 			{
@@ -602,6 +601,8 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 		{
 			if(!worldObj.isAnyLiquid(this.boundingBox))
 				throttle = 0;
+			if(worldObj.isAnyLiquid(this.boundingBox))
+				inWater = true;
 		}
 		
 		
@@ -634,12 +635,10 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 		
 		
 		/* Drifting mechanics */
-		if(isDrifting)
-		{//Primary drift mechanics: steering controls some of the sliding.
-		//if(adjustThrottle>=type.driftSpeed)
-		//{
-			driftSlide += 50*(steeringForce);
-		//}
+		if(isDrifting && totalWheelsOnGround>1)
+		{
+		//Primary drift mechanics: steering controls some of the sliding.
+		driftSlide += 65*(steeringForce)*type.driftControl;
 		
 		//Drifting slowly returns to normal over time, depending on drift traction.
 		driftSlide *= (0.956F + type.driftTraction)/(type.driftTraction+1);
@@ -664,23 +663,28 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 		if(adjustThrottle<=0.2)
 		driftSlide*=0.5F;
 	
-		//Drift caps at 90 degrees in either direction.
-		if(driftSlide>90)
-			driftSlide=90;
+		//Apply the hard drift cap.
+		if(driftSlide>type.driftCap)
+			driftSlide=type.driftCap;
 		else
-		if(driftSlide<-90)
-			driftSlide=-90;
+		if(driftSlide<-type.driftCap)
+			driftSlide=-type.driftCap;
 		
 		if(Math.abs(driftSlide)<3)
 			isDrifting = false;
 		}
 		else
+		if(totalWheelsOnGround>1)
 		{
 		driftSlide*=0.75F;
 			
 		if(Math.abs(driftSlide)<0.04)
 		driftSlide = 0;
 		}
+		
+		
+		//Reset total wheels on ground counter.
+		totalWheelsOnGround = 0;
 		
 
 		//Player is not driving this. Update its position from server update packets
@@ -775,28 +779,31 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				else
 				{
 					float driftFactor = driftSlide;
-				
+					
 					displayDriftFactor = driftFactor;
 					
 					//if(getVehicleType().fourWheelDrive || wheel.ID == 0 || wheel.ID == 1)
 					{
 						float velocityScale = 0.1F * (throttle + (isBoosting ? type.boostPower : 0F)) * (throttle > 0 ? type.maxThrottle : type.maxNegativeThrottle) * data.engine.engineSpeed;
-						wheel.motionX += Math.cos((wheel.rotationYaw - (driftFactor/4)) * 3.14159265F / 180F) * velocityScale;
-						wheel.motionZ += Math.sin((wheel.rotationYaw - (driftFactor/4)) * 3.14159265F / 180F) * velocityScale;
+						wheel.motionX += Math.cos((wheel.rotationYaw - (driftFactor/3)) * 3.14159265F / 180F) * velocityScale;
+						wheel.motionZ += Math.sin((wheel.rotationYaw - (driftFactor/3)) * 3.14159265F / 180F) * velocityScale;
 					}
 
 					//Apply steering
 					if(wheel.ID == 2 || wheel.ID == 3)
 					{
-						float sThrottle = Math.min(adjustThrottle,type.driftSpeed);
+						float sThrottle = Math.min(adjustThrottle,type.maxTurningThrottle);
 						
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (throttle > 0 ? 1 : -1);
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (motionH*(type.traction) > 0 ? 1 : 0);
 						//float velocityScale = 0.01F * (wheelsYaw > 0 ? type.turnLeftModifier : type.turnRightModifier) * (adjustThrottle-2F+((type.traction+50)/50F) > 0 ? 1 : 0);
-						float velocityScale = (0.01F - Math.max( (0.024F / (((type.traction+10F)*2.5F)/(3+((sThrottle-adjustThrottle))) + 2F/4F)) * (Math.min(Math.max(sThrottle*2-0.3F,0),1)),0.01F )) * (wheelsYaw > 0 ? type.turnLeftModifier*1.5F : type.turnRightModifier*1.5F) * (adjustThrottle > 0 ? 1 : -1);
 						
-						wheel.motionX -= wheel.getSpeedXZ() * Math.sin((wheel.rotationYaw - (driftFactor/3)) * 3.14159265F / 180F) * velocityScale * (wheelsYaw - (driftFactor/1));
-						wheel.motionZ += wheel.getSpeedXZ() * Math.cos((wheel.rotationYaw - (driftFactor/3)) * 3.14159265F / 180F) * velocityScale * (wheelsYaw - (driftFactor/1));
+						//float velocityScale = (0.01F - Math.max( (0.024F / (((type.traction+10F)*2.5F)/(3+((sThrottle-adjustThrottle))) + 2F/4F)) * (Math.min(Math.max(sThrottle*2-0.3F,0),1)),0.01F )) * (wheelsYaw > 0 ? type.turnLeftModifier*1.5F : type.turnRightModifier*1.5F) * (adjustThrottle > 0 ? 1 : -1);
+						
+						float velocityScale = ( !isDrifting ? (0.01F*MathUtils.clampf(type.traction/20,0,1))  * ( sThrottle > 0 ? (sThrottle/type.maxTurningThrottle) : 0) : 0) * (adjustThrottle > 0 ? 1 : -1);
+						
+						wheel.motionX -= wheel.getSpeedXZ() * Math.sin((wheel.rotationYaw - (driftFactor/2)) * 3.14159265F / 180F) * velocityScale * (wheelsYaw /*- (driftFactor/1)*/);
+						wheel.motionZ += wheel.getSpeedXZ() * Math.cos((wheel.rotationYaw - (driftFactor/2)) * 3.14159265F / 180F) * velocityScale * (wheelsYaw /*- (driftFactor/1)*/);
 					}
 					else
 					{
@@ -835,8 +842,14 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 			avgWheelHeight = (float)(wheels[0].posX + wheels[1].posX + wheels[2].posX + wheels[3].posX)/4;
 	    	if(!wheels[0].onGround && !wheels[1].onGround && !wheels[2].onGround && !wheels[3].onGround){
 	    		allWheelsOnGround = false;
+				for(int i = 0; i < 4; i++)
+				{
+				if(wheels[i].onGround)
+				totalWheelsOnGround++;
+				}
 	    	} else {
 	    		allWheelsOnGround = true;
+				totalWheelsOnGround = 4;
 	    	}
 			}
 			
@@ -935,7 +948,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				throttleCalc = (adjustThrottle > 0 ? (adjustThrottle < type.maxTurningThrottle ? adjustThrottle : type.maxTurningThrottle) : adjustThrottle);
 				
 				//float velocityScale = 0.1F * Math.min(throttleCalc,Math.abs(type.driftSpeed)) * (adjustThrottle > 0 ? type.maxThrottle : type.maxNegativeThrottle) * data.engine.engineSpeed;
-				float cDriftSlide = MathUtils.clampf((driftSlide*0.2f),-7,7);
+				float cDriftSlide = MathUtils.clampf((driftSlide*0.25f),-7,7);
 				
 				velocityScaleG = 0.1F * throttleCalc * (adjustThrottle > 0 ? type.maxThrottle : type.maxNegativeThrottle) * data.engine.engineSpeed;
 				float steeringScale = 0.1F * (wheelsYaw > 0 ? type.turnLeftModifier*1.5F : type.turnRightModifier*1.5F);
@@ -945,8 +958,8 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				
 				if (!isDrifting)
 				{
-				finalTurnFactor = steeringForce;
-				yaw = axes.getYaw()/180F*3.14159F + ((finalTurnFactor+prevFinalTurn)/2);
+				finalTurnFactor = steeringForce*(totalWheelsOnGround>1 || inWater ? 1 : 0.1F);
+				yaw = axes.getYaw()/180F*3.14159F + (finalTurnFactor);
 				}
 				else
 				{
@@ -961,9 +974,9 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 						finalSteering = Math.min(steeringForce*(!isDrifting ? 1 : type.driftSteering),driftSteerForce);
 					
 					
-					finalTurnFactor = finalSteering;
+					finalTurnFactor = finalSteering*(totalWheelsOnGround>1 || inWater ? 1 : 0.1F);
 					
-					yaw = axes.getYaw()/180F*3.14159F + ((finalTurnFactor+prevFinalTurn)/2);
+					yaw = axes.getYaw()/180F*3.14159F + (finalTurnFactor);
 				}
 			}
 			

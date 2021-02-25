@@ -35,6 +35,7 @@ import com.flansmod.common.network.PacketSeatUpdates;
 import com.flansmod.common.teams.TeamsManager;
 import com.flansmod.common.tools.ItemTool;
 import com.flansmod.common.vector.Vector3f;
+import com.flansmod.utils.MathUtils;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
@@ -88,6 +89,8 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
 	
 	float steerYaw = 0;
 	float adjustSteerYaw = 0;
+	float drift = 0;
+	float adjustDrift = 0;
 			
 	private boolean shooting;
 
@@ -316,30 +319,37 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
 			vehicle = (EntityVehicle) driveable;
 			VehicleType vtype = vehicle.getVehicleType();
 			
-			float steer = vehicle.wheelsYaw;
+			float steer = vehicle.finalTurnFactor*77;
+			drift = (-vehicle.driftSlide/9F)*(MathUtils.clampf(vehicle.adjustThrottle/Math.max(vtype.maxTurningThrottle,0.01F),0,1));
 			
-			if (vehicle.isDrifting)
+			/*if (vehicle.isDrifting)
 			{
 			if (vehicle.driftSlide>0)
-				steer = Math.max(vehicle.wheelsYaw+(vehicle.driftSlide/6F),vehicle.driftSlide/3F);
+				steer = Math.max(vehicle.wheelsYaw+(vehicle.driftSlide/5F),vehicle.driftSlide/3F);
 			else
 			if (vehicle.driftSlide<0)
-				steer = Math.min(vehicle.wheelsYaw+(vehicle.driftSlide/6F),vehicle.driftSlide/3F);
-			}
+				steer = Math.min(vehicle.wheelsYaw+(vehicle.driftSlide/5F),vehicle.driftSlide/3F);
+			}*/
 			
 			if (hasgun == null && driver)
-				steerYaw = -(steer * Math.max(Math.min(vehicle.throttleCalc*1.5F,1),-1))*2.5F * (vehicle.wheelsYaw > 0 ? vtype.turnLeftModifier*(vtype.cameraTurnMultiplier*1.2F) : vtype.turnRightModifier*(vtype.cameraTurnMultiplier*1.2F));
+				steerYaw -= steer;
+				//steerYaw = -(steer * Math.max(Math.min(vehicle.throttleCalc*1.5F,1),-1))*2.5F * (vehicle.wheelsYaw > 0 ? vtype.turnLeftModifier*(vtype.cameraTurnMultiplier*1.2F) : vtype.turnRightModifier*(vtype.cameraTurnMultiplier*1.4F))*(vehicle.throttleCalc >= 0 ? 1 : 0.35F);
 			else
 				steerYaw = 0F;
             }
-			
-			adjustSteerYaw = (adjustSteerYaw*5 + steerYaw)/6;
+            
+            //+(vehicle.driftSlide/6F)
+            adjustDrift = (adjustDrift + drift)/2;
+			adjustSteerYaw = (adjustSteerYaw*1 + (steerYaw+adjustDrift))/2;
+			steerYaw /= 2;
 			
 			playerYaw = -90F + globalLookAxes.getYaw() + adjustSteerYaw;
-			if (driveable instanceof EntityPlane || hasgun != null)
+			
+			playerPitch = globalLookAxes.getPitch();
+			/*if (driveable instanceof EntityPlane || hasgun != null)
 				playerPitch = globalLookAxes.getPitch();
 			else
-				playerPitch = globalLookAxes.getPitch()/1.15F;
+				playerPitch = globalLookAxes.getPitch()/1.15F;*/
 
 			double dYaw = playerYaw - prevPlayerYaw;
 			if(dYaw > 180)
@@ -360,12 +370,14 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
 			if(worldObj.isRemote)
 			{
 				prevPlayerRoll = playerRoll;
-				if (driveable instanceof EntityPlane || hasgun != null)
+				playerRoll = -globalLookAxes.getRoll();
+				
+				/*if (driveable instanceof EntityPlane || hasgun != null)
 				{
 					playerRoll = -globalLookAxes.getRoll();
 				}
 				else
-					playerRoll = -globalLookAxes.getRoll()/1.15F;
+					playerRoll = -globalLookAxes.getRoll()/1.15F;*/
 			}
 		}
 	}

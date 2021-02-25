@@ -13,13 +13,16 @@
 * Added a remaining shots tooltip for bullet/ammo items, with new per-item config lines to control how it is displayed.
 * Added paintjob name tooltips for named weapon paintjobs in the Gun Modification Table.
 
+* Reworked knockback from bullets - knockback can now be configured in each bullet's txt file.
+
 * Added a speed readout to the vehicle/plane HUD, and moved the plane HUD's heading readout to the top-center of the screen.
 
-* Added lines for controlling the throttle threshold at which vehicles will switch from their starting sounds to their driving/backing sounds. 
-* Adjusted vehicle handling to allow for better drifting and steering behavior.
+* Added config lines for controlling the throttle threshold at which vehicles will switch from their starting sounds to their driving/backing sounds. 
+* Adjusted vehicle handling to allow for better steering and drifting behavior.
 	- "TurnThrottleLimit" sets the throttle level at which point a vehicle will not turn any tighter.
 	- Fully fledged drifting behavior.  Drifting is triggered by tapping the brakes will turning.
 	- Drifting too tightly will cause a vehicle to lose speed.
+	- Traction temporarily has no effect now, pending a future rework.
 * Added a boosting ability, which can be activated using the line "CanBoost True"
 	- Tap the Pitch Down key to boost.  Boost drains from a power meter when active, and the meter refills overtime.
 

@@ -182,6 +182,7 @@ public class PlayerHitbox
 				//If the attack was allowed, we should remove their immortality cooldown so we can shoot them again. Without this, any rapid fire gun become useless
 				player.arrowHitTimer++;
 				player.hurtResistantTime = player.maxHurtResistantTime / 2;
+				
 				//Custom knockback handling.
 				/*
 				RULES:
@@ -203,7 +204,7 @@ public class PlayerHitbox
 					if (velocityY<0.1)
 					player.motionY = velocityY+0.1;
 						
-					player.motionZ = (kbMotionX + (velocityX*Math.max(0,bullet.kbDampener)))/(1+bullet.kbDampener);
+					player.motionZ = (kbMotionZ + (velocityX*Math.max(0,bullet.kbDampener)))/(1+bullet.kbDampener);
 				}
 				if (bullet.doKnockback == false)
 				{

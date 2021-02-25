@@ -438,7 +438,7 @@ public class DriveableType extends InfoType
 				canBoost = Boolean.parseBoolean(split[1]);
 			else if(split[0].equals("BoostPower"))
 				boostPower = Float.parseFloat(split[1]);
-			else if(split[0].equals("BoostMinDuration"))
+			else if(split[0].equals("BoostMinTicks"))
 				boostMinTime = Math.max(Double.parseDouble(split[1]),3);
 			else if(split[0].equals("BoostMaxDuration"))
 				boostDrain = Float.parseFloat(split[1]);
