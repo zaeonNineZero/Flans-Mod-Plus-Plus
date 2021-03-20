@@ -207,7 +207,7 @@ public class EntityPlane extends EntityDriveable
     		FlansMod.getPacketHandler().sendToServer(new PacketDriveableKey(key));
     		return true;
     	}
-    	boolean canThrust = (seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)seats[0].riddenByEntity).capabilities.isCreativeMode) || getDriveableData().fuelInTank > 0;
+    	boolean canThrust = (seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)seats[0].riddenByEntity).capabilities.isCreativeMode) || (getDriveableData().fuelInTank > 0 || type.fuelTankSize==-1);
 		switch(key)
 		{
 			case 0 : //Accelerate : Increase the throttle, up to 1.
@@ -459,6 +459,10 @@ public class EntityPlane extends EntityDriveable
 		if(this.flareDelay > 0)
 			this.flareDelay--;
 		
+		
+		if(type.setPlayerInvisible && !this.worldObj.isRemote && seats[0].riddenByEntity != null)
+			seats[0].riddenByEntity.setInvisible(true);
+		
 
 		//Shooting, inventories, etc.
 		//Decrement bomb and gun timers
@@ -577,7 +581,7 @@ public class EntityPlane extends EntityDriveable
 
 		//Movement
 
-		boolean canThrust = (seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)seats[0].riddenByEntity).capabilities.isCreativeMode) || data.fuelInTank > 0;
+		boolean canThrust = (seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)seats[0].riddenByEntity).capabilities.isCreativeMode) || (data.fuelInTank > 0 || type.fuelTankSize==-1);
 		boolean canThrustCreatively = (seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)seats[0].riddenByEntity).capabilities.isCreativeMode);
 
 

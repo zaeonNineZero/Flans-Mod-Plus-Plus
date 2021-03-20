@@ -259,6 +259,7 @@ public class ModelGun extends ModelBase
 		flip(gunModel);
 		flip(defaultBarrelModel);
 		flip(defaultScopeModel);
+		flip(addonScopeModel);
 		flip(defaultStockModel);
 		flip(defaultGripModel);
 		flip(ammoModel);
@@ -285,6 +286,7 @@ public class ModelGun extends ModelBase
 		translate(gunModel, x, y, z);
 		translate(defaultBarrelModel, x, y, z);
 		translate(defaultScopeModel, x, y, z);
+		translate(addonScopeModel, x, y, z);
 		translate(defaultStockModel, x, y, z);
 		translate(defaultGripModel, x, y, z);
 		translate(ammoModel, x, y, z);

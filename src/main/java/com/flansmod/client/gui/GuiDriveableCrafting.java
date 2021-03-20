@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -149,7 +150,8 @@ public class GuiDriveableCrafting extends GuiScreen
 			GL11.glScalef(-50F * selectedType.modelScale / selectedType.cameraDistance, 50F * selectedType.modelScale / selectedType.cameraDistance, 50F * selectedType.modelScale / selectedType.cameraDistance);
 			GL11.glRotatef(180F, 0F, 0F, 1F);
 			GL11.glRotatef(30F, 1F, 0F, 0F);
-			GL11.glRotatef(spinner / 5F, 0F, 1F, 0F);
+			GL11.glRotatef(spinner / 3F, 0F, 1F, 0F);
+			RenderHelper.enableStandardItemLighting();
 			mc.renderEngine.bindTexture(FlansModResourceHandler.getTexture(selectedType));
 			if( selectedType.model != null )
 			{
@@ -157,6 +159,7 @@ public class GuiDriveableCrafting extends GuiScreen
 			}
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			RenderHelper.disableStandardItemLighting();
 			GL11.glPopMatrix();
 
 			if( selectedType.model == null )

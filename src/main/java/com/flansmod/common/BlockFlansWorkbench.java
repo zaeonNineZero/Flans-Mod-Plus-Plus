@@ -67,6 +67,10 @@ public class BlockFlansWorkbench extends Block
         {
             return top[j];
         } else
+        if(i == 0)
+        {
+            return bottom[j];
+        } else
         {
             return side[j];
         }

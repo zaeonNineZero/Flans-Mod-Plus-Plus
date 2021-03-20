@@ -53,6 +53,8 @@ public class ItemTool extends Item
         maxStackSize = 1;
 		type = t;
 		type.item = this;
+    	if (type.toolLife == 1 || type.toolLife == 0)
+    	maxStackSize = type.stackSize;
 		setMaxDamage(type.toolLife);
 		
 			setCreativeTab(FlansMod.tabFlanParts);
@@ -126,7 +128,10 @@ public class ItemTool extends Item
 					itemstack.setItemDamage(itemstack.getItemDamage() + 1);
 				//If the tool is damagable and is destroyed upon being used up, then destroy it
 				if(type.toolLife > 0 && type.destroyOnEmpty && itemstack.getItemDamage() == itemstack.getMaxDamage())
+				{
+					itemstack.setItemDamage(0);
 					itemstack.stackSize--;
+				}
 			}
 			//Our work here is done. Let's be off
 			return itemstack;
@@ -158,7 +163,10 @@ public class ItemTool extends Item
 					itemstack.setItemDamage(itemstack.getItemDamage() + 1);
 				//If the tool is damagable and is destroyed upon being used up, then destroy it
 				if(type.toolLife > 0 && type.destroyOnEmpty && itemstack.getItemDamage() == itemstack.getMaxDamage())
+				{
+					itemstack.setItemDamage(0);
 					itemstack.stackSize--;
+				}
 				//Our work here is done. Let's be off
 				return itemstack;
 			}
@@ -216,7 +224,10 @@ public class ItemTool extends Item
 								
 								//If the tool is damagable and is destroyed upon being used up, then destroy it
 								if(type.toolLife > 0 && type.destroyOnEmpty && itemstack.getItemDamage() == itemstack.getMaxDamage())
+								{
+									itemstack.setItemDamage(0);
 									itemstack.stackSize--;
+								}
 								//Our work here is done. Let's be off
 								return itemstack;
 							}
@@ -265,7 +276,10 @@ public class ItemTool extends Item
 						itemstack.setItemDamage(itemstack.getItemDamage() + 1);
 					//If the tool is damagable and is destroyed upon being used up, then destroy it
 					if(type.toolLife > 0 && type.destroyOnEmpty && itemstack.getItemDamage() >= itemstack.getMaxDamage())
+					{
+						itemstack.setItemDamage(0);
 						itemstack.stackSize--;
+					}
 		        }
 	        }
 	        if(!world.isRemote && type.key){

@@ -25,6 +25,8 @@ public class ToolType extends InfoType
 	
 	/** Boolean switches that decide whether the tool should heal players and / or driveables */
 	public boolean healPlayers = false, healDriveables = false, canHealOthers = true;
+	/** Max stack size of item */
+	public int stackSize = 1;
 	/** The amount to heal per use (one use per click) */
 	public int healAmount = 0;
 	/** The amount of uses the tool has. 0 means infinite */
@@ -71,6 +73,8 @@ public class ToolType extends InfoType
 				model = FlansMod.proxy.loadModel(split[1], shortName, ModelBase.class);
 			else if(split[0].equals("Texture"))
 				texture = split[1];
+			else if(split[0].equals("StackSize"))
+				stackSize = Integer.parseInt(split[1]);
 			else if(split[0].equals("Parachute"))
 				parachute = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("ExplosiveRemote"))

@@ -2,6 +2,21 @@
 	CHANGELOG
 
 
+[Version 1.1.1]
+* Added support for model parts that only show up when a sight is attached. ("addonScopeModel")
+	- Functions as an opposite for "defaultScopeModel" in the model's java file.
+	- Models using these parts will NOT work with base Flan's Mod and Flan's Mod Ultimate.
+* Single-use tools can now be stacked.
+
+* Setting FuelTankSize to -1 will now give the vehicle/plane infinite fuel, and will also hide the fuel menu option.
+	- Note that setting FuelTankSize to 0 will hide the fuel menu option and prevent the vehicle/plane from moving.
+* Implemented "SetPlayerInvisible" functionality for planes; previously this only worked with vehicle.
+
+* Finished adding seperated textures for the Gun Modification Table and the Vehicle Crafting Table.
+	- These seperate textures can be modified with resource packs.
+* Vehicles in the Vehicle Crafting Table now have shading and rotate faster.
+
+
 [Version 1.1.0]
 * Added preliminary support for Gadget attachments (Implemented separately from FMU:SE's version)
 	- Intended for rail-mounted laser sights or flashlights
@@ -27,7 +42,7 @@
 	- Tap the Pitch Down key to boost.  Boost drains from a power meter when active, and the meter refills overtime.
 
 * Fixed a collision bug that could cause planes to teleport down to Brazil (read: bedrock level) when colliding with land vehicles.
-	- This fixed uses ported code from Flan's Mod Ultimate: Stability Edition.  Thanks GoldSloth!
+	- This fix uses ported code from Flan's Mod Ultimate: Stability Edition.  Thanks GoldSloth!
 
 
 

@@ -28,9 +28,11 @@ public class VehicleType extends DriveableType
 	public float maxTurningThrottle = 0.34F;
 	/** How much the camera rotates away from the vehicle's yaw point when steering */
 	public float cameraTurnMultiplier = 1F;
+	/** Whether to apply a patch for vehicles with max throttle values above 1. */
+	public boolean highThrottlePatch = true;
 	
 	/** The throttle level at which vehicles can start drifting when turning and braking */
-	public float driftSpeed = 0.5F;
+	public float driftSpeed = 0.4F;
 	/** The multiplier of how much tighter the vehicle can turn when drifting */
 	public float driftSteering = 1.2F;
 	
@@ -43,9 +45,9 @@ public class VehicleType extends DriveableType
 	public float driftCap = 90F;
 	
 	/** How fast the vehicle throttles up; ignored when Cruise Control is active */
-	public float acceleration = 1F;
+	public float acceleration = 1.0F;
 	/** How fast the vehicle throttles down; ignored when Cruise Control is active */
-	public float deceleration = 1F;
+	public float deceleration = 1.0F;
 	/** How fast the vehicle's throttle decays back to zero when Cruise Control is off */
 	public float throttleDecayRate = 1F;
 	/** How fast the vehicle's throttle decays back to zero when Cruise Control is off */
@@ -101,6 +103,8 @@ public class VehicleType extends DriveableType
 				deceleration = Float.parseFloat(split[1]);
 			if(split[0].equals("ThrottleDecayMultiplier") || split[0].equals("ThrottleDecayRate"))
 				throttleDecayRate = Float.parseFloat(split[1]);
+            if(split[0].equals("ThrottlePatch") || split[0].equals("ApplyThrottlePatch"))
+            	highThrottlePatch = Boolean.parseBoolean(split[1].toLowerCase());
 			if(split[0].equals("CameraTurnMultiplier"))
 				cameraTurnMultiplier = Float.parseFloat(split[1]);
 				
