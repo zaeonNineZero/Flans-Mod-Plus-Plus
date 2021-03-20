@@ -12,8 +12,8 @@
 	- Note that setting FuelTankSize to 0 will hide the fuel menu option and prevent the vehicle/plane from moving.
 * Implemented "SetPlayerInvisible" functionality for planes; previously this only worked with vehicle.
 
-* Finished adding seperated textures for the Gun Modification Table and the Vehicle Crafting Table.
-	- These seperate textures can be modified with resource packs.
+* Finished adding separated textures for the Gun Modification Table and the Vehicle Crafting Table.
+	- These separate textures can be modified with resource packs.
 * Vehicles in the Vehicle Crafting Table now have shading and rotate faster.
 
 
