@@ -826,7 +826,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				
 				//Rate of fuel consumption may need fixing here.
 				if(!canThrustCreatively)
-					data.fuelInTank -= data.engine.fuelConsumption * Math.abs(throttle) * 0.1F;
+					data.fuelInTank -= data.engine.fuelConsumption * Math.abs(throttle) * 0.05F;
 				
 			}
 			
@@ -1007,7 +1007,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 
 		//Sounds
 		//Starting sound
-		if ((((Math.abs(throttle) > 0.02F && Math.abs(throttle) < type.engineSoundThreshold && (hasEnoughFuel() || type.fuelTankSize==-1)) || ((!hasEnoughFuel() || type.fuelTankSize!=-1) && Math.abs(throttle) > 0.02F))) && soundPosition == 0)
+		if ((((Math.abs(throttle) > 0.02F && Math.abs(throttle) < type.engineSoundThreshold && (hasEnoughFuel() || type.fuelTankSize==-1)) || ((!hasEnoughFuel() && type.fuelTankSize!=-1) && Math.abs(throttle) > 0.02F))) && soundPosition == 0)
 		{
 			if(!worldObj.isRemote)
 			PacketPlaySound.sendSoundPacket(posX, posY, posZ, type.startSoundRange, dimension, type.startSound, false);

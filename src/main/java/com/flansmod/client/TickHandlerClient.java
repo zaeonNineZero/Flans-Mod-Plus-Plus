@@ -497,10 +497,15 @@ public class TickHandlerClient
 				
 				mc.fontRenderer.drawStringWithShadow(String.format("Throttle: %.0f%%", ent.throttle*100), 2, 2, 0xffffff);
 				mc.fontRenderer.drawStringWithShadow("Core Health: " + healthP + "%" , 2, 12, healthColour);
+				
+				if (ent.getDriveableType().fuelTankSize>=1){
 				if (rfEngine)
+				
 					mc.fontRenderer.drawStringWithShadow("RF Capacity: " + fuelP + "%" , 2, 22, fuelColour);
 				else
 					mc.fontRenderer.drawStringWithShadow("Fuel Capacity: " + fuelP + "%" , 2, 22, fuelColour);
+				}
+				
 				if(ent instanceof EntityPlane)
 				{
 					EntityDriveable entP = (EntityDriveable)ent;

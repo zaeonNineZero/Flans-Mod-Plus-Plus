@@ -1,6 +1,7 @@
 # Build and Bins
 .gradle/
 gradle/
+_legacyversions/
 build/
 bin/
 out/

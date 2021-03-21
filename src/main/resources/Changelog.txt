@@ -16,6 +16,11 @@
 	- These separate textures can be modified with resource packs.
 * Vehicles in the Vehicle Crafting Table now have shading and rotate faster.
 
+HOTFIX A
+* Minor tweaks.
+	- Halved vehicle fuel consumption rate.
+	- Fuel indicator now hides when FuelTankSize is 0 or less.
+
 
 [Version 1.1.0]
 * Added preliminary support for Gadget attachments (Implemented separately from FMU:SE's version)
