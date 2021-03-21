@@ -1524,7 +1524,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 		if(riddenByEntity != null)
 			riddenByEntity.fallDistance = 0F;
 
-		boolean canThrust = driverIsCreative() || driveableData.fuelInTank > 0;
+		boolean canThrust = driverIsCreative() || (driveableData.fuelInTank > 0 || type.fuelTankSize==-1 );
 
 		//If there's no player in the driveable or it cannot thrust, slow the plane and turn off mouse held actions
 		if((seats[0] != null && seats[0].riddenByEntity == null) || !canThrust && getDriveableType().maxThrottle != 0 && getDriveableType().maxNegativeThrottle != 0)
@@ -1618,7 +1618,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 				{
 					PartType part = ((ItemPart)item).type;
 					//Check it is a fuel item
-					if(part.category == 9)
+					if(part.category == 9 && (type.canRefuelInMotion || Math.round(throttle*100)==0))
 					{
 						//Check if the fuel type matches the vehicle
 						if ( (data.engine.usedFuelType.equals(part.fuelType) || data.engine.usedFuelType.equals("anyFuel")) /*&& stack.getItemDamage() < stack.getMaxDamage()*/ )
@@ -1663,12 +1663,12 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 					}
 				}
 				//Check for Buildcraft oil and fuel buckets
-				else if(FlansMod.hooks.BuildCraftLoaded && stack.isItemEqual(FlansMod.hooks.BuildCraftOilBucket) && data.fuelInTank + 1000 * fuelMultiplier <= type.fuelTankSize)
+				else if((type.canRefuelInMotion || Math.round(throttle*100)==0) &&  (FlansMod.hooks.BuildCraftLoaded && stack.isItemEqual(FlansMod.hooks.BuildCraftOilBucket) && data.fuelInTank + 1000 * fuelMultiplier <= type.fuelTankSize))
 				{
 					data.fuelInTank += 1000 * fuelMultiplier;
 					data.setInventorySlotContents(i, new ItemStack(Items.bucket));
 				}
-				else if(FlansMod.hooks.BuildCraftLoaded && stack.isItemEqual(FlansMod.hooks.BuildCraftFuelBucket) && data.fuelInTank + 2000 * fuelMultiplier <= type.fuelTankSize)
+				else if((type.canRefuelInMotion || Math.round(throttle*100)==0) && (FlansMod.hooks.BuildCraftLoaded && stack.isItemEqual(FlansMod.hooks.BuildCraftFuelBucket) && data.fuelInTank + 2000 * fuelMultiplier <= type.fuelTankSize))
 				{
 					data.fuelInTank += 2000 * fuelMultiplier;
 					data.setInventorySlotContents(i, new ItemStack(Items.bucket));
@@ -2097,13 +2097,13 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public boolean hasFuel() {
 		if (seats == null || seats[0] == null || seats[0].riddenByEntity == null)
 			return false;
-		return driverIsCreative() || driveableData.fuelInTank > 0;
+		return driverIsCreative() || driveableData.fuelInTank > 0 || getDriveableType().fuelTankSize==-1;
 	}
 
     public boolean hasEnoughFuel() {
 		//if (seats == null || seats[0] == null || seats[0].riddenByEntity == null)
 			//return false;
-		return driverIsCreative() || (driveableData.fuelInTank > driveableData.engine.fuelConsumption * throttle);
+		return driverIsCreative() || getDriveableType().fuelTankSize==-1 || (driveableData.fuelInTank > driveableData.engine.fuelConsumption * throttle);
 
 	}
 

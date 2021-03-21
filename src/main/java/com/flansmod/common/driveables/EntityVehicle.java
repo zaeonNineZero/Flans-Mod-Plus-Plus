@@ -767,7 +767,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 
 			//Apply velocity
 			//If the player driving this is in creative, then we can thrust, no matter what
-			boolean canThrustCreatively = !TeamsManager.vehiclesNeedFuel || (seats != null && seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)seats[0].riddenByEntity).capabilities.isCreativeMode);
+			boolean canThrustCreatively = !TeamsManager.vehiclesNeedFuel ||  type.fuelTankSize==-1 || (seats != null && seats[0] != null && seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)seats[0].riddenByEntity).capabilities.isCreativeMode);
 			//Otherwise, check the fuel tanks!
 			if(canThrustCreatively || data.fuelInTank > data.engine.fuelConsumption * throttle)
 			{
