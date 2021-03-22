@@ -2,6 +2,19 @@
 	CHANGELOG
 
 
+[Version 1.1.1b]
+* Added the "CanRefuelInMotion" parameter, to determine whether a vehicle/plane can be refueled when the throttle is not 0.
+	- By default, all vehicles/planes can only refuel when their throttle is 0.
+	- Electric/RF vehicles are unaffected, and will recharge regardless of the throttle.
+* Fixed improper behavior with vehicles using the infinite fuel trick (FuelTankSize 1)
+
+
+[Version 1.1.1a]
+* Minor tweaks.
+	- Halved vehicle fuel consumption rate.
+	- Fuel indicator now hides when FuelTankSize is 0 or less.
+
+
 [Version 1.1.1]
 * Added support for model parts that only show up when a sight is attached. ("addonScopeModel")
 	- Functions as an opposite for "defaultScopeModel" in the model's java file.
@@ -15,11 +28,6 @@
 * Finished adding separated textures for the Gun Modification Table and the Vehicle Crafting Table.
 	- These separate textures can be modified with resource packs.
 * Vehicles in the Vehicle Crafting Table now have shading and rotate faster.
-
-HOTFIX A
-* Minor tweaks.
-	- Halved vehicle fuel consumption rate.
-	- Fuel indicator now hides when FuelTankSize is 0 or less.
 
 
 [Version 1.1.0]
