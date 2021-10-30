@@ -109,7 +109,12 @@ public class DriveableType extends InfoType
 	public int numCargoSlots, numBombSlots, numMissileSlots;
 	/** The fuel tank size */
 	public int fuelTankSize = 100;
+	/** Whether the driveable can be refueled while in motion */
 	public boolean canRefuelInMotion = false;
+	/** The multiplier for how fast a vehicle consumes fuel */
+	public float fuelUseMultiplier = 1;
+	/** The multiplier for how fast a vehicle consumes fuel */
+	public String preferedEngine;
 
 	//Rendering variables
 	/** The yOffset of the model. Shouldn't be needed if you made your model properly */
@@ -524,6 +529,10 @@ public class DriveableType extends InfoType
 				fuelTankSize = Integer.parseInt(split[1]);
 			else if(split[0].equals("CanRefuelInMotion"))
 				canRefuelInMotion = Boolean.parseBoolean(split[1].toLowerCase());
+			else if(split[0].equals("FuelUsageMultiplier"))
+				fuelUseMultiplier = Float.parseFloat(split[1].toLowerCase());
+			else if(split[0].equals("PreferedEngine"))
+				preferedEngine = split[1];
 
 			else if(split[0].equals("BulletDetection"))
 				bulletDetectionRadius = Integer.parseInt(split[1]);

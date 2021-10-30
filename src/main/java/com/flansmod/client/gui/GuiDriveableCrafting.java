@@ -75,7 +75,10 @@ public class GuiDriveableCrafting extends GuiScreen
     {
         if (button.id == 0)
         {
-        	FlansMod.proxy.craftDriveable(inventory.player, DriveableType.types.get(selectedBlueprint));
+        	if (DriveableType.types.size() != 0) // new non zero check (Credit to 1whohears)
+    		{
+            	        FlansMod.proxy.craftDriveable(inventory.player, DriveableType.types.get(selectedBlueprint));
+    		}
         }
     }
 		

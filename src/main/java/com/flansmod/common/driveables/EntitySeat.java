@@ -727,9 +727,9 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
 								PacketPlaySound.sendSoundPacket(posX, posY, posZ, FlansMod.soundRange, dimension, gun.shootSound, false);
 								soundDelay = gun.shootSoundLength;
 							}
-							//Get the bullet item damage and increment it
+							//Get the bullet item damage and increment it, unless we have infinite ammo
 							int damage = bulletItemStack.getItemDamage();
-							if(!((EntityPlayer)riddenByEntity).capabilities.isCreativeMode)
+							if(!((EntityPlayer)riddenByEntity).capabilities.isCreativeMode || !((ItemShootable)bulletItemStack.getItem()).type.infiniteAmmo)
 							bulletItemStack.setItemDamage(damage + 1);
 							//If the bullet item is completely damaged (empty)
 							if(damage >= bulletItemStack.getMaxDamage())

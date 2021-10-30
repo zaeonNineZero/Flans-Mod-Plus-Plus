@@ -63,6 +63,9 @@ public class ItemPlane extends Item implements IFlanItem
 			{
 				stack.stackTagCompound = new NBTTagCompound();
 				stack.stackTagCompound.setString("Type", type.shortName);
+				if (type.preferedEngine != null)
+				stack.stackTagCompound.setString("Engine", type.preferedEngine);
+				else
 				stack.stackTagCompound.setString("Engine", PartType.defaultEngines.get(EnumType.plane).shortName);
 			}
 		}
@@ -211,6 +214,9 @@ public class ItemPlane extends Item implements IFlanItem
     	ItemStack planeStack = new ItemStack(item, 1, 0);
     	NBTTagCompound tags = new NBTTagCompound();
     	tags.setString("Type", type.shortName);
+		if (type.preferedEngine != null)
+			tags.setString("Engine", type.preferedEngine);
+		else
     	if(PartType.defaultEngines.containsKey(EnumType.plane))
     		tags.setString("Engine", PartType.defaultEngines.get(EnumType.plane).shortName);
     	for(EnumDriveablePart part : EnumDriveablePart.values())

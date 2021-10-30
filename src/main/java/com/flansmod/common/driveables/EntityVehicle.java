@@ -826,7 +826,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				
 				//Rate of fuel consumption may need fixing here.
 				if(!canThrustCreatively)
-					data.fuelInTank -= data.engine.fuelConsumption * Math.abs(throttle) * 0.05F;
+					data.fuelInTank -= data.engine.fuelConsumption * type.fuelUseMultiplier * Math.abs(throttle) * 0.05F;
 				
 			}
 			
@@ -897,7 +897,7 @@ public class EntityVehicle extends EntityDriveable implements IExplodeable
 				wheel.moveEntity(0F, (!onDeck)?-0.98F:0, 0F);	
 			}
 			
-			if((throttle >= 0.2 || throttle <= -0.2) && wheel.getSpeedXYZ() <= getAvgWheelSpeedXYZ()/4 && !cruiseControl) throttle *= 0.9;
+			if((throttle >= 0.2 || throttle <= -0.2) && wheel.getSpeedXYZ() <= getSpeedXYZ()/4 && !cruiseControl) throttle *= 0.9;
 		}
 		
 		if(wheels[0] != null && wheels[1] != null && wheels[2] != null && wheels[3] != null)

@@ -775,6 +775,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 					PacketPlaySound.sendSoundPacket(posX, posY, posZ, FlansMod.soundRange, dimension, type.shootSound(secondary), false);
 					//Get the bullet item damage and increment it
 					int damage = bulletItemStack.getItemDamage();
+					if(!((EntityPlayer)riddenByEntity).capabilities.isCreativeMode || !((ItemShootable)bulletItemStack.getItem()).type.infiniteAmmo)
 					bulletItemStack.setItemDamage(damage + 1);
 					//If the bullet item is completely damaged (empty)
 					if(damage + 1 == bulletItemStack.getMaxDamage())
@@ -1602,7 +1603,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 			if(stack == null || stack.stackSize <= 0)
 				continue;
 			Item item = stack.getItem();
-			//If we have an electric engine, look for RedstoneFlux power source items, such as power cubes
+			//If we have an electric engine, look for RedstoneFlux power source items, such as energy cells
 			if(data.engine.useRFPower)
 			{
 				if(item instanceof IEnergyContainerItem)
@@ -1618,7 +1619,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 				{
 					PartType part = ((ItemPart)item).type;
 					//Check it is a fuel item
-					if(part.category == 9 && (type.canRefuelInMotion || Math.round(throttle*100)==0))
+					if(part.category == 9 && (type.canRefuelInMotion || Math.round(throttle*200)==0))
 					{
 						//Check if the fuel type matches the vehicle
 						if ( (data.engine.usedFuelType.equals(part.fuelType) || data.engine.usedFuelType.equals("anyFuel")) /*&& stack.getItemDamage() < stack.getMaxDamage()*/ )

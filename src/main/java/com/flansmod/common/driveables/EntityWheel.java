@@ -58,6 +58,13 @@ public class EntityWheel extends Entity implements IEntityAdditionalSpawnData
 		prevPosY = posY;
 		prevPosZ = posZ;
 	}
+
+	@Override
+    @SideOnly(Side.CLIENT)
+    public float getShadowSize()
+    {
+        return 0F;
+    }
 	
 	@Override
     protected void fall(float k)

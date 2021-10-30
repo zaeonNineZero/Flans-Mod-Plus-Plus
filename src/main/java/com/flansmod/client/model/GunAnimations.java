@@ -15,6 +15,10 @@ public class GunAnimations
 	public float pumped = -1F, lastPumped = -1F;
 	/** Delayed Reload Animations : Doing the delayed animation */
 	public boolean pumping = false;
+
+	public boolean toggleSlideBack = false;
+	public boolean doSlideBack = false;
+	public int resetSlideTime = 0;
 	
 	public boolean reloading = false;
 	
@@ -55,17 +59,25 @@ public class GunAnimations
 				pumping = false;
 		}
 		
-		lastGunSlide = gunSlide;
+		lastGunSlide = Math.min(1,gunSlide);
+		if(doSlideBack && reloading)
+			gunSlide = 0.95F - (0.95F - gunSlide) * 0.4F;
+		else
 		if(gunSlide > 0)
-			gunSlide *= 0.45F;
+			gunSlide *= 0.46F;
 		
-		lastGunRecoil = gunRecoil;
+		lastGunRecoil = Math.min(1,gunRecoil);
 		if(gunRecoil > 0)
 			gunRecoil *= 0.71F;
+		
+		gunSlide=Math.min(1,gunSlide);
+		gunRecoil=Math.min(1,gunRecoil);
 		
 		lastReloadAnimationProgress = reloadAnimationProgress;
 		if(reloading)
 			reloadAnimationProgress += 1F / reloadAnimationTime;
+		if(reloading && reloadAnimationProgress*reloadAnimationTime >= resetSlideTime && doSlideBack)
+			doSlideBack = false;
 		if(reloading && reloadAnimationProgress >= 1F)
 			reloading = false;
 		
@@ -84,23 +96,31 @@ public class GunAnimations
 	public void doShoot(int pumpDelay, int pumpTime)
 	{
 		minigunBarrelRotationSpeed += 2F;
-		lastGunSlide = gunSlide = 1F;
-		lastGunRecoil = gunRecoil = 1F;
+		//lastGunSlide = gunSlide = 1F;
+		gunSlide = 1.8F;
+		gunRecoil = 1.15F;
 		timeUntilPump = pumpDelay;
 		timeToPumpFor = pumpTime;
 	}
 		
-	public void doReload(int reloadTime, int pumpDelay, int pumpTime)
+	public void doReload(int reloadTime, int pumpDelay, int pumpTime, int lockSlideTime)
 	{
 		reloading = true;
 		lastReloadAnimationProgress = reloadAnimationProgress = 0F;
 		reloadAnimationTime = reloadTime;
 		timeUntilPump = pumpDelay;
 		timeToPumpFor = pumpTime;
+		doSlideBack = toggleSlideBack;
+		resetSlideTime = lockSlideTime;
 	}
 	
 	public void doMelee(int meleeTime)
 	{
 		meleeAnimationLength = meleeTime;
+	}
+	
+	public void setSlideBack(boolean b)
+	{
+		toggleSlideBack = b;
 	}
 }

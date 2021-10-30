@@ -731,7 +731,7 @@ public class EntityPlane extends EntityDriveable
 		}*/
 
 		//Some constants
-		float g = (!onDeck)?0.98F / 4F: 0;
+		float g = (!onDeck)?0.98F / 3F: 0;
 		float drag = 1F - (0.05F * type.drag);
 		float wobbleFactor = 0F;//.005F;
 
@@ -743,7 +743,7 @@ public class EntityPlane extends EntityDriveable
 		int numPropsWorking = 0;
 		int numProps = 0;
 
-		float fuelConsumptionMultiplier = 2F;
+		float fuelConsumptionMultiplier = type.fuelUseMultiplier * 2F;
 
 		switch(mode)
 		{

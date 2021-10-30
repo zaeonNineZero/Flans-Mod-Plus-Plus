@@ -177,6 +177,8 @@ public class PlayerHitbox
 			double velocityZ = player.motionZ;
 			
 			//Attack the entity!
+			if(bullet.type.doDamage)
+			{
 			if(player.attackEntityFrom(damagesource, hitDamage))
 			{
 				//If the attack was allowed, we should remove their immortality cooldown so we can shoot them again. Without this, any rapid fire gun become useless
@@ -215,6 +217,7 @@ public class PlayerHitbox
 				
 				//Yuck.
 				//PacketDispatcher.sendPacketToAllAround(posX, posY, posZ, 50, dimension, PacketPlaySound.buildSoundPacket(posX, posY, posZ, type.hitSound, true));
+			}
 			}
 			return penetratingPower - 1;
 		}

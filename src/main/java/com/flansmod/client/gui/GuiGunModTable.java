@@ -119,7 +119,7 @@ public class GuiGunModTable extends GuiContainer
         		{
         			if(x + y * 2 < gunType.numGenericAttachmentSlots)
         			{
-        				inventorySlots.getSlot(5 + x + y * 2).yDisplayPosition = 83 + 18 * y;
+        				inventorySlots.getSlot(6 + x + y * 2).yDisplayPosition = 83 + 18 * y;
         				drawTexturedModalRect(xOrigin + 9 + 18 * x, yOrigin + 82 + 18 * y, 178, 54, 18, 18);
         			}
         		}

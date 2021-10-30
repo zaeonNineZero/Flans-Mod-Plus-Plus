@@ -489,8 +489,8 @@ public class ItemGun extends Item implements IFlanItem
 						FlansModClient.gunAnimationsRight.put(player, animations);
 					}
 				}
-				int pumpDelay = gunType.model == null ? 0 : gunType.model.pumpDelay;
-				int pumpTime = gunType.model == null ? 1 : gunType.model.pumpTime;
+				int pumpDelay = gunType.pumpDelayOverride == 0 ? (gunType.model == null ? 1 : gunType.model.pumpDelay) : gunType.pumpDelayOverride;
+				int pumpTime = gunType.pumpTimeOverride == 0 ? (gunType.model == null ? 1 : gunType.model.pumpTime) : gunType.pumpTimeOverride;
 				animations.doShoot(pumpDelay, pumpTime);
 				if (type.swingOnShoot)
 				{
@@ -1085,7 +1085,8 @@ public class ItemGun extends Item implements IFlanItem
 			{
 				//Shoot
 				shoot(gunStack, gunType, world, bulletStack, entityplayer, left);
-				//Damage the bullet item
+				//Damage the bullet item, unless we have infinite ammo.
+				if (!((ItemShootable)bulletStack.getItem()).type.infiniteAmmo)
 				bulletStack.setItemDamage(bulletStack.getItemDamage() + 1);
 
 				//Update the stack in the gun
@@ -1163,8 +1164,10 @@ public class ItemGun extends Item implements IFlanItem
 					ItemStack item = inventory.getStackInSlot(j);
 					if (item != null && item.getItem() instanceof ItemShootable && gunType.isAmmo(((ItemShootable)(item.getItem())).type))
 					{
+						ShootableType bulletType = ((ItemShootable)(item.getItem())).type;
 						int bulletsInThisSlot = item.getMaxDamage() - item.getItemDamage();
-						if(bulletsInThisSlot > bulletsInBestSlot)
+						int priorityBoost = Math.max(bulletType.priority * 1000, (bulletType.shortName.equals(gunType.preferedAmmo) ? 50000 : 0));
+						if((bulletsInThisSlot + priorityBoost) > bulletsInBestSlot)
 						{
 							bestSlot = j;
 							bulletsInBestSlot = bulletsInThisSlot;
@@ -1326,7 +1329,7 @@ public class ItemGun extends Item implements IFlanItem
 		else PlayerHandler.getPlayerData(entityplayer).shootTimeRight = gunType.shootDelay;
 		if(gunType.knockback > 0)
 		{
-			//Apply knockback.  Code modified from Balkon's Weapon Mod.
+			//Apply recoil knockback.  Code modified from Balkon's Weapon Mod.
 			
 			float f = gunType.knockback*(entityplayer.isSneaking() ? -0.05F : -0.1F);
 			double d = -MathHelper.sin((entityplayer.rotationYaw / 180F) * 3.141593F) * MathHelper.cos((0 / 180F) * 3.141593F) * f;

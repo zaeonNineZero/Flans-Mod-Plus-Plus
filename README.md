@@ -9,10 +9,10 @@ Feature Summary
 
 Features for Guns, Attachments, Ammo, and Grenades:
 * Better controls for knockback from bullets.
-* Txt file configuration for gun animations.
-* Updated HUD and tooltips for guns and bullets.
+* Txt file configuration for various gun animation params.
 * Functionality for "Mining Laser" weapons.
-* Bipod attachment functionality.
+* Bipod functionality for grip attachments.
+* New model parts for gun models: "hammerModel" (similar to slideModel but it rotates rather than moving when shooting) and "addonScopeModel" (the opposite of defaultScopeModel - only gets added when a scope is equipped)
 
 
 New Vehicle Mechanics.
@@ -20,7 +20,7 @@ New Vehicle Mechanics.
 
 * Passive vehicle deceleration from friction, and cruise control for maintaining throttle.
 * Improved physics for boats and other watercraft.
-* Highly configurable driving model, including traction, and vehicle acceleration/deceleration.
+* Highly configurable driving model, including traction and vehicle acceleration/deceleration.
 * Configurable drifting and boosting; braking and turning starts a drift, and boosting temporarily makes a vehicle go faster.
 * Vehicle sound threshold config lines for controlling the throttle level at which driving sounds start playing.
 
@@ -33,6 +33,7 @@ Improved Plane Mechanics.
 * Emitters can be toggled on/off depending on VTOL flight mode.
 
 Misc. Changes.
+* Updated HUD and tooltips for guns and bullets.
 * New/altered HUD text lines for vehicles and planes, showing throttle, core health, fuel level, heading, and (for planes) pitch and yaw.
 * Added a HUD text line for VTOL planes showing the current flight mode.
 * Almost all item types can now have description tags ingame.
@@ -40,8 +41,8 @@ Misc. Changes.
 
 Flan's Mod ++ compared to Flan's Mod Ultimate: Stability Edition
 -------------------------------------------------------------------------
-Flan's Mod ++ was built off a version of FM+ prior to the Ultimate update.  As such, it is closer to Flan's Mod 4.10 than it is to FMU:SE.  Some features present in Ultimate are also in FM++, but are implemented in a different way.
+Flan's Mod ++ was built off a version of FM+ prior to the Ultimate update.  As such, it is closer to Flan's Mod 4.10 than it is to FMU:SE.  Some features present in Ultimate are also in FM++, but may function differently due to different implementation.
 
 Compatibility with Flan's Mod 4.10
 ----------------------------------
-FM++ was designed with compatability in mind.  All models and config txt files from normal Flan's packs should be compatable with FM++.  Servers can switch from normal Flan's Mod to FM++ with few, if any, changes required.
+FM++ was designed with compatibility in mind.  All models and config txt files from normal Flan's packs should be compatible with FM++.  Servers can switch from normal Flan's Mod to FM++ with few, if any, changes required.

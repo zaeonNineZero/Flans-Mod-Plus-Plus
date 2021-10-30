@@ -30,10 +30,13 @@ public class ShootableType extends InfoType
 	public String dropItemOnReload = null, dropItemOnShoot = null, dropItemOnHit = null;
 	/** The number of rounds fired by a gun per item */
 	public int roundsPerItem = 1;
+	public boolean infiniteAmmo = false;
 	
 	/** The sound played upon shooting */
 	public String fireSound;
 	public boolean useFireSound = false;
+	
+	public int priority=0;
 
 	//Physics and Stuff
 	/** The speed at which the grenade should fall */
@@ -158,6 +161,15 @@ public class ShootableType extends InfoType
 				dropItemOnHit = split[1];
 			else if(split[0].equals("RoundsPerItem"))
 				roundsPerItem = Integer.parseInt(split[1]);
+
+			else if(split[0].equals("Priority"))
+				priority = Integer.parseInt(split[1]);
+			
+			else if(split[0].equals("InfiniteAmmo"))
+			{
+				infiniteAmmo = Boolean.parseBoolean(split[1].toLowerCase());
+				priority += (infiniteAmmo ? 10 : 0);
+			}
 			
 			else if(split[0].equals("FireSound"))
 			{

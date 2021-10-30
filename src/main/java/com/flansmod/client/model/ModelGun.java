@@ -30,6 +30,7 @@ public class ModelGun extends ModelBase
 	public ModelRendererTurbo[] revolver2BarrelModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] breakActionModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] slideModel = new ModelRendererTurbo[0];
+	public ModelRendererTurbo[] hammerModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] pumpModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] minigunBarrelModel = new ModelRendererTurbo[0];
 	public ModelRendererTurbo[] leverActionModel = new ModelRendererTurbo[0];
@@ -99,6 +100,9 @@ public class ModelGun extends ModelBase
 	public Vector3f revolverFlipPoint = new Vector3f();
 	/** The rotation point for the revolver2 flip */
 	public Vector3f revolver2FlipPoint = new Vector3f();
+	
+	public float hammerRotateAngle = 30F;
+	public Vector3f hammerRotatePoint = new Vector3f();
 	/** The angle the gun is broken by for break actions */
 	public float breakAngle = 45F;
 	/** If true, then the gun will perform a spinning reload animation */
@@ -176,6 +180,11 @@ public class ModelGun extends ModelBase
 	public void renderSlide(float f)
 	{
 		render(slideModel, f);
+	}
+	
+	public void renderHammer(float f)
+	{
+		render(hammerModel, f);
 	}
 	
 	public void renderPump(float f)
@@ -264,6 +273,7 @@ public class ModelGun extends ModelBase
 		flip(defaultGripModel);
 		flip(ammoModel);
 		flip(slideModel);
+		flip(hammerModel);
 		flip(pumpModel);
 		flip(minigunBarrelModel);
 		flip(revolverBarrelModel);
@@ -291,6 +301,7 @@ public class ModelGun extends ModelBase
 		translate(defaultGripModel, x, y, z);
 		translate(ammoModel, x, y, z);
 		translate(slideModel, x, y, z);
+		translate(hammerModel, x, y, z);
 		translate(pumpModel, x, y, z);
 		translate(minigunBarrelModel, x, y, z);
 		translate(revolverBarrelModel, x, y, z);

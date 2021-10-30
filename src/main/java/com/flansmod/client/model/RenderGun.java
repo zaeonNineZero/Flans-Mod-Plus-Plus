@@ -288,7 +288,7 @@ public class RenderGun implements IItemRenderer
 		
 		
 					//Gun pump animation, defined by the GunType and only used if pump distance is not zero
-					if (model.pumpHandleDistance != 0) {
+					if (model.pumpHandleDistance != 0 || gunTypeFirst.moveSlideOnPump) {
 					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * gunType.pumpAnimX * 0.0625F, -(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * -gunType.pumpAnimY * 0.0625F, -(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * gunType.pumpAnimZ * 0.0625F);
 					GL11.glRotatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * -gunType.pumpAnimPitch, 0F, 0F, 1F);
 					GL11.glRotatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * -gunType.pumpAnimYaw, 0F, 1F, 0F);
@@ -624,38 +624,47 @@ public class RenderGun implements IItemRenderer
 			if(gripAttachment == null && !model.gripIsOnPump)
 				model.renderDefaultGrip(f);
 			
+			//Slide back on reload call
+			animations.setSlideBack(type.lockSlideOnReload);
+			
 			//Render various shoot / reload animated parts
-			//Render the slide
+			//Render slide parts
 			GL11.glPushMatrix();
 			{
 				GL11.glTranslatef(-(animations.lastGunSlide + (animations.gunSlide - animations.lastGunSlide) * smoothing) * model.gunSlideDistance, 0F, 0F);
 				
 				if(model.moveSlideOnPump || type.moveSlideOnPump)
-					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * model.gunSlideDistance*0.95F, 0F, 0F);
+					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * model.gunSlideDistance, 0F, 0F);
 				
 				model.renderSlide(f);
-				if(scopeAttachment == null && model.scopeIsOnSlide)
+				if(model.scopeIsOnSlide)
+				{
+				if(scopeAttachment == null)
 					model.renderDefaultScope(f);
-				else if(scopeAttachment != null && model.scopeIsOnSlide)
+				else if(scopeAttachment != null)
 					model.renderAddonScope(f);
+				}
 			}
 			GL11.glPopMatrix();
 			
-			//Render the break action
+			//Render break action parts
 			GL11.glPushMatrix();
 			{
 				GL11.glTranslatef(model.barrelBreakPoint.x, model.barrelBreakPoint.y, model.barrelBreakPoint.z);
 				GL11.glRotatef(reloadRotate * -model.breakAngle, 0F, 0F, 1F);
 				GL11.glTranslatef(-model.barrelBreakPoint.x, -model.barrelBreakPoint.y, -model.barrelBreakPoint.z);
 				model.renderBreakAction(f);
-				if(scopeAttachment == null && model.scopeIsOnBreakAction)
+				if(model.scopeIsOnBreakAction)
+				{
+				if(scopeAttachment == null)
 					model.renderDefaultScope(f);
-				else if(scopeAttachment != null && model.scopeIsOnBreakAction)
+				else if(scopeAttachment != null)
 					model.renderAddonScope(f);
+				}
 			}
 			GL11.glPopMatrix();
 			
-			//Render the pump-action handle
+			//Render pump-action handle
 			GL11.glPushMatrix();
 			{
 				GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * model.pumpHandleDistance, 0F, 0F);
@@ -674,7 +683,7 @@ public class RenderGun implements IItemRenderer
 			}
 			GL11.glPopMatrix();
 			
-			//Render the minigun barrels
+			//Render minigun barrels
 			if(type.mode == EnumFireMode.MINIGUN)
 			{
 				GL11.glPushMatrix();
@@ -685,9 +694,18 @@ public class RenderGun implements IItemRenderer
 				GL11.glPopMatrix();
 			}
 			
-			//Render the cocking handle
+			//Render hammer model (new to FM++; rotates when a shot is fired using animations.gunSlide)
+			GL11.glPushMatrix();
+			{
+				GL11.glTranslatef(model.hammerRotatePoint.x, model.hammerRotatePoint.y, model.hammerRotatePoint.z);
+				GL11.glRotatef(-(animations.lastGunSlide + (animations.gunSlide - animations.lastGunSlide) * smoothing) * -model.hammerRotateAngle, 0F, 0F, 1F);
+				GL11.glTranslatef(-model.hammerRotatePoint.x, -model.hammerRotatePoint.y, -model.hammerRotatePoint.z);
+				
+				model.renderHammer(f);
+			}
+			GL11.glPopMatrix();
 			
-			//Render the revolver barrel
+			//Render revolver cylinder
 			GL11.glPushMatrix();
 			{
 				GL11.glTranslatef(model.revolverFlipPoint.x, model.revolverFlipPoint.y, model.revolverFlipPoint.z);
@@ -697,7 +715,7 @@ public class RenderGun implements IItemRenderer
 			}
 			GL11.glPopMatrix();
 			
-			//Render the revolver2 barrel
+			//Render revolver2 cylinder (opens on the opposite side)
 			GL11.glPushMatrix();
 			{
 				GL11.glTranslatef(model.revolverFlipPoint.x, model.revolverFlipPoint.y, model.revolverFlipPoint.z);
@@ -933,7 +951,7 @@ public class RenderGun implements IItemRenderer
 					GL11.glTranslatef(-(animations.lastGunSlide + (animations.gunSlide - animations.lastGunSlide) * smoothing) * model.gunSlideDistance * type.modelScale, 0F, 0F);
 					
 					if(model.moveSlideOnPump || type.moveSlideOnPump)
-					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * (model.gunSlideDistance*0.95F) * type.modelScale, 0F, 0F);
+					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * (model.gunSlideDistance) * type.modelScale, 0F, 0F);
 				}
 				GL11.glScalef(scopeAttachment.modelScale * type.attachScopeScale, scopeAttachment.modelScale * type.attachScopeScale, scopeAttachment.modelScale * type.attachScopeScale);
 				ModelAttachment scopeModel = scopeAttachment.model;
@@ -1038,7 +1056,12 @@ public class RenderGun implements IItemRenderer
 					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * model.pumpHandleDistance * type.modelScale, 0F, 0F);
 				else
 				if(model.gadgetIsOnSlide || type.gadgetIsOnSlide)
+				{
 					GL11.glTranslatef(-(animations.lastGunSlide + (animations.gunSlide - animations.lastGunSlide) * smoothing) * model.gunSlideDistance * type.modelScale, 0F, 0F);
+				
+					if(model.moveSlideOnPump || type.moveSlideOnPump)
+					GL11.glTranslatef(-(1 - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * smoothing)) * (model.gunSlideDistance) * type.modelScale, 0F, 0F);
+				}
 				
 				GL11.glScalef(gadgetAttachment.modelScale * type.attachGadgetScale, gadgetAttachment.modelScale * type.attachGadgetScale, gadgetAttachment.modelScale * type.attachGadgetScale);
 				ModelAttachment gadgetModel = gadgetAttachment.model;

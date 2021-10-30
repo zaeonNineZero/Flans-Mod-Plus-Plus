@@ -30,6 +30,7 @@ public class GunType extends InfoType implements IScope
 	//Gun Behaviour Variables
 	/** The list of bullet types that can be used in this gun */
 	public List<ShootableType> ammo = new ArrayList<ShootableType>();
+	public String preferedAmmo = "";
 	/** Whether the player can press the reload key (default R) to reload this gun */
 	public boolean canForceReload = true;
 	/** Whether the player can shoot while sprinting */
@@ -135,6 +136,12 @@ public class GunType extends InfoType implements IScope
 	public float boltCenterOffset = 0.0F;
 	
 	public boolean moveSlideOnPump = false;
+	public boolean lockSlideOnReload = false;
+	public int lockSlideTime = 0;
+	
+	public int pumpDelayReloadOverride = 0;
+	public int pumpDelayOverride = 0;
+	public int pumpTimeOverride = 0;
 	
 	/**The sprinting animation type*/
 	public EnumSprintHoldType sprintAnim = EnumSprintHoldType.SIMPLE;
@@ -383,6 +390,7 @@ public class GunType extends InfoType implements IScope
 	protected void read(String[] split, TypeFile file)
 	{
 		super.read(split, file);
+		
 		try
 		{
 			if(split[0].equals("Damage"))
@@ -398,9 +406,16 @@ public class GunType extends InfoType implements IScope
 			else if(split[0].equals("CanShootWhileSprinting"))
 				canSprintShoot = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("ReloadTime"))
+			{
 				reloadTime = Integer.parseInt(split[1]);
+				lockSlideTime = reloadTime-4;
+			}
 			else if(split[0].equals("Recoil"))
+			{
 				recoilPitch = Float.parseFloat(split[1]);
+				recoilAnimX = recoilPitch/5;
+				recoilAnimRotate = recoilPitch;
+			}
 			else if(split[0].equals("RecoilYaw"))
 				recoilYaw = Float.parseFloat(split[1]) / 10;
 			else if(split[0].equals("RandomRecoilRange"))
@@ -618,6 +633,8 @@ public class GunType extends InfoType implements IScope
 			}
 			else if(split[0].equals("NumAmmoSlots") || split[0].equals("NumAmmoItemsInGun") || split[0].equals("LoadIntoGun"))
 				numAmmoItemsInGun = Integer.parseInt(split[1]);
+			else if(split[0].equals("PreferedAmmo"))
+				preferedAmmo = split[1];
 			else if(split[0].equals("BulletSpeed"))
 				bulletSpeed = Float.parseFloat(split[1]);
 			else if(split[0].equals("CanShootUnderwater"))
@@ -712,6 +729,7 @@ public class GunType extends InfoType implements IScope
 			}
 			
 			//Zed additional settings
+			
 			else if(split[0].equals("RecoilAnimXForce"))
 				recoilAnimX = Float.parseFloat(split[1]);
 			else if(split[0].equals("RecoilAnimYForce"))
@@ -740,6 +758,17 @@ public class GunType extends InfoType implements IScope
 			
 			else if(split[0].equals("MoveSlideOnPump"))
 				moveSlideOnPump = Boolean.parseBoolean(split[1]);
+			else if(split[0].equals("LockSlideOnReload"))
+				lockSlideOnReload = Boolean.parseBoolean(split[1]);
+			else if(split[0].equals("LockSlideTime") || split[0].equals("UnlockSlideTime"))
+				lockSlideTime = Integer.parseInt(split[1]);
+			
+			else if(split[0].equals("PumpDelayAfterReload"))
+				pumpDelayReloadOverride = Integer.parseInt(split[1]);
+			else if(split[0].equals("PumpDelayOnShoot"))
+				pumpDelayOverride = Integer.parseInt(split[1]);
+			else if(split[0].equals("PumpTimeOverride"))
+				pumpTimeOverride = Integer.parseInt(split[1]);
 			
 			else if(split[0].equals("ScopedYOffset"))
 				scopedYOffset = Float.parseFloat(split[1]);
@@ -870,7 +899,6 @@ public class GunType extends InfoType implements IScope
 				attachGadgetScale = Float.parseFloat(split[1]);
 			
 			
-			
 		}
 		catch (Exception e)
 		{
@@ -889,7 +917,6 @@ public class GunType extends InfoType implements IScope
 				e.printStackTrace();
 			}
 		}
-
 
 	}
 

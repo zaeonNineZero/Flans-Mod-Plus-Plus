@@ -25,6 +25,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import com.flansmod.common.FlansMod;
+import com.flansmod.common.parts.ItemPart;
 import com.flansmod.common.parts.PartType;
 import com.flansmod.common.types.EnumType;
 import com.flansmod.common.types.IFlanItem;
@@ -64,6 +65,9 @@ public class ItemVehicle extends ItemMapBase implements IFlanItem
 			{
 				stack.stackTagCompound = new NBTTagCompound();
 				stack.stackTagCompound.setString("Type", type.shortName);
+				if (type.preferedEngine != null)
+				stack.stackTagCompound.setString("Engine", type.preferedEngine);
+				else
 				stack.stackTagCompound.setString("Engine", PartType.defaultEngines.get(EnumType.vehicle).shortName);
 			}
 		}
@@ -198,6 +202,9 @@ public class ItemVehicle extends ItemMapBase implements IFlanItem
     	ItemStack planeStack = new ItemStack(item, 1, 0);
     	NBTTagCompound tags = new NBTTagCompound();
     	tags.setString("Type", type.shortName);
+		if (type.preferedEngine != null)
+			tags.setString("Engine", type.preferedEngine);
+		else
     	if(PartType.defaultEngines.containsKey(EnumType.vehicle))
     		tags.setString("Engine", PartType.defaultEngines.get(EnumType.vehicle).shortName);
     	for(EnumDriveablePart part : EnumDriveablePart.values())

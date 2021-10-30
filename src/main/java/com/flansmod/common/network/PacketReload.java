@@ -111,9 +111,9 @@ public class PacketReload extends PacketBase
 					FlansModClient.gunAnimationsRight.put(clientPlayer, animations);
 				}
     		}
-			int pumpDelay = type.model == null ? 0 : type.model.pumpDelayAfterReload;
-			int pumpTime = type.model == null ? 1 : type.model.pumpTime;
-			animations.doReload(type.reloadTime, pumpDelay, pumpTime);
+			int pumpDelay = type.pumpDelayReloadOverride == 0 ? (type.model == null ? 0 : type.model.pumpDelayAfterReload) : type.pumpDelayReloadOverride;
+			int pumpTime = type.pumpTimeOverride == 0 ? (type.model == null ? 1 : type.model.pumpTime) : type.pumpTimeOverride;
+			animations.doReload(type.reloadTime, pumpDelay, pumpTime, type.lockSlideTime);
     		
 			//Iterate over all inventory slots and find the magazine / bullet item with the most bullets
 			int bestSlot = -1;

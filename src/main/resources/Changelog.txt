@@ -2,6 +2,27 @@
 	CHANGELOG
 
 
+[Version 1.1.2]
+* Added support for "hammer" parts that rotate when a gun is fired.
+	- For modelers: set your gun's hammer parts to an unused group in SMP Toolbox (i.e. RevolverBarrel) and export it.  Then replace the normal group name (i.e. "revolverBarrelModel") with "hammerModel" to create a hammer part.
+	- Animation params are identical to the barrel break params, but instead use hammerRotateAngle and hammerRotatePoint.
+* Added PumpDelayAfterReload, PumpDelayOnShoot, and PumpTime params to gun config files.  These override the equivalent params in the model java files.
+* Guns can now be set to have their slides pull back while reloading, then snap forward after a certain amount of time.
+	- Enable by adding "LockSlideOnReload True" to your gun's text file, and the time is set using "LockSlideTime" and entering an integer.
+	
+* Added the "Priority" and "InfiniteAmmo" params to shootable config files.
+	- "Priority" adds an extra layer of priority to a shootable item; this lets it be loaded before all lower priority ammo, even if another item has more rounds left.
+	- "InfiniteAmmo" prevents ammo from being used when firing guns.
+
+* Vehicle wheels should no longer have entity shadows underneath them.
+* Preliminary work on a "preferred-engine" system for vehicles, which tells the game which engine to give a vehicle spawned from the creative inventory.
+	
+* Additional behind the scenes work on gadget attachments.
+
+* Bug Fixes:
+	- Fixed a crash where the Vehicle Crafting Table could throw an index out of bounds exception when there are no vehicles added by content packs.  Credit to 1whohears for the fix. (#3 - Small Drivable Crafting Gui Error)
+
+
 [Version 1.1.1b]
 * Added the "CanRefuelInMotion" parameter, to determine whether a vehicle/plane can be refueled when the throttle is not 0.
 	- By default, all vehicles/planes can only refuel when their throttle is 0.

@@ -439,7 +439,8 @@ public class EntityMecha extends EntityDriveable
 								rightAnimations.doShoot(pumpDelay, pumpTime);
 							}
 						}
-						//Damage the bullet item
+						//Damage the bullet item, if it isn't an infinite ammo item.
+						if (!((ItemShootable)bulletStack.getItem()).type.infiniteAmmo)
 						bulletStack.setItemDamage(bulletStack.getItemDamage() + 1);
 						
 						//Update the stack in the gun

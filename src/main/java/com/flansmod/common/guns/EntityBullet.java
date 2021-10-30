@@ -642,6 +642,8 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 					double velocityY = entityHit.entity.motionY;
 					double velocityZ = entityHit.entity.motionZ;
 					
+					if(type.doDamage)
+					{
 					if(entityHit.entity.attackEntityFrom(getBulletDamage(false), d) && entityHit.entity instanceof EntityLivingBase)
 					{
 						EntityLivingBase living = (EntityLivingBase)entityHit.entity;
@@ -682,6 +684,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
 							living.motionY = velocityY;
 							living.motionZ = velocityZ;
 						}
+					}
 					}
 					if(type.setEntitiesOnFire)
 						entityHit.entity.setFire(20);

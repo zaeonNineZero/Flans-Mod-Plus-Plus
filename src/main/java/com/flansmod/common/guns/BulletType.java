@@ -75,6 +75,8 @@ public class BulletType extends ShootableType
 	/** Steering power, determines how fast the bullet can turn when homing in on targets */
 	public float steeringPower = 1F;
 	
+	public boolean doDamage = true;
+	
 	public int maxDegreeOfMissile = 45;
 	public int tickStartHoming = 5;
 	public int tickStartGuided = 1;
